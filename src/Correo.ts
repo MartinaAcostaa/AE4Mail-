@@ -49,6 +49,39 @@ export class Correo implements ICorreo {
     this._leido = false;
     this._favorito = false;
   }
+  
+  
+  public get id(): number {
+    return this._id;
+  }
+
+  public getAsunto(): string {
+    return this._asunto;
+  }
+
+  public getContenido(): string {
+    return this._contenido;
+  }
+
+  public getRemitente(): IContacto {
+    return this._remitente;
+  }
+
+  public getDestinatarios(): IContacto[] {
+    return [...this._destinatarios];
+  }
+
+  public getLeido(): boolean {
+    return this._leido;
+  }
+
+  public getFavorito(): boolean {
+    return this._favorito;
+  }
+
+  public getFechaCreacion(): Date {
+    return new Date(this._fechaCreacion.getTime());
+  }
 
 
 }
