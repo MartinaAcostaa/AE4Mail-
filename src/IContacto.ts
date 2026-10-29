@@ -4,6 +4,4 @@ export interface IContacto {
     getNombre(): string;
     getEmail(): string;
 
-    modificarNombre(nombre: string): void;
-    modificarEmail(email: string): void;
 }
