@@ -22,5 +22,33 @@ export class Correo implements ICorreo {
     remitente: IContacto,
     destinatarios: IContacto[]
   ) 
+  {
+    if (!asunto || asunto.trim().length === 0) {
+      throw new Error('El asunto es obligatorio.');}
+
+    if (!contenido || contenido.trim().length === 0) {
+      throw new Error('El contenido es obligatorio.');}
+
+    if (!remitente) {throw new Error('El remitente es obligatorio.');}
+
+    if (
+      !Array.isArray(destinatarios) ||
+      destinatarios.length === 0 ||
+      destinatarios.some(destinatario => destinatario == null)
+    ) {
+      throw new Error('Debe existir al menos un destinatario válido.');
+    }
+
+    this._id = Correo._siguienteId++;
+    this._asunto = asunto.trim();
+    this._contenido = contenido;
+    this._remitente = remitente;
+    this._destinatarios = [...destinatarios];
+    this._fechaCreacion = new Date();
+
+    this._leido = false;
+    this._favorito = false;
+  }
+
 
 }
