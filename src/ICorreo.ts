@@ -8,12 +8,6 @@ export interface ICorreo {
     getRemitente(): IContacto;
     getDestinatarios(): IContacto[];
     getLeido(): boolean;
-    getFavorito(): boolean;
-    getEnviado(): boolean;
 
-    marcarComoLeido(): void;
-    marcarComoNoLeido(): void;
-    marcarComoFavorito(): void;
-    quitarFavorito(): void;
-    marcarComoEnviado(): void;
+
 }
