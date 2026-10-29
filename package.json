@@ -1,0 +1,17 @@
+{
+  "name": "ae4-gestor-de-correos",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Gestor de correos electrónicos con filtros dinámicos - AE4 Paradigmas II",
+  "scripts": {
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@vitest/coverage-v8": "^5.0.3",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
+  }
+}
