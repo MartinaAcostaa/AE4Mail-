@@ -46,6 +46,32 @@ describe('RF-01: Creación de correos electrónicos', () => {
 
     expect(() => new Correo('Asunto', 'Mensaje', ana, []))
       .toThrow();
+
+  });
+
+   it('no expone la colección interna de destinatarios', () => {
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    const luis = new Contacto('Luis', 'luis@ejemplo.com');
+    const Marta = new Contacto('Marta', 'marta@ejemplo.com');
+
+    const destinatarios = [luis];
+
+    const correo = new Correo(
+      'Reunión',
+      'Nos reunimos mañana',
+      ana,
+      destinatarios
+    );
+
+    // Modificar el arreglo original no cambia el correo
+    destinatarios.push(Marta);
+    expect(correo.getDestinatarios()).toEqual([luis]);
+
+    // Modificar el arreglo obtenido tampoco cambia el correo
+    const copia = correo.getDestinatarios();
+    copia.push(Marta);
+
+    expect(correo.getDestinatarios()).toEqual([luis]);
   });
 
 
