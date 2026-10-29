@@ -32,4 +32,23 @@ describe('RF-01: Creación de correos electrónicos', () => {
     expect(correo.getLeido()).toBe(false);
     expect(correo.getFavorito()).toBe(false);
   });
+
+
+  it('rechaza datos obligatorios vacíos', () => {
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    const luis = new Contacto('Luis', 'luis@ejemplo.com');
+
+    expect(() => new Correo('', 'Mensaje', ana, [luis]))
+      .toThrow();
+
+    expect(() => new Correo('Asunto', '   ', ana, [luis]))
+      .toThrow();
+
+    expect(() => new Correo('Asunto', 'Mensaje', ana, []))
+      .toThrow();
+  });
+
+
+
+
 });
