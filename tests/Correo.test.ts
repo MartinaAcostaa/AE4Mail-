@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Contacto } from '../src/Contacto'
-import { Correo } from '../src/correo';
+import { Correo } from '../src/Correo';
 
 describe('RF-01: Creación de correos electrónicos', () => {
   it('crea correos con identificadores únicos', () => {
