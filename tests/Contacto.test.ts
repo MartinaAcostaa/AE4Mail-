@@ -74,7 +74,30 @@ describe('RF-01: Creación de correos electrónicos', () => {
     expect(correo.getDestinatarios()).toEqual([luis]);
   });
 
+  it('conserva asunto, contenido y fecha de creación', () => {
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    const luis = new Contacto('Luis', 'luis@ejemplo.com');
 
+    const antes = new Date();
 
+    const correo = new Correo(
+      'Entrega',
+      'Adjunto el trabajo',
+      ana,
+      [luis]
+    );
+
+    const despues = new Date();
+
+    expect(correo.getAsunto()).toBe('Entrega');
+    expect(correo.getContenido()).toBe('Adjunto el trabajo');
+    
+    expect(correo.getFechaCreacion().getTime())
+      .toBeGreaterThanOrEqual(antes.getTime());
+
+    expect(correo.getFechaCreacion().getTime())
+      .toBeLessThanOrEqual(despues.getTime());
+
+  });
 
 });
