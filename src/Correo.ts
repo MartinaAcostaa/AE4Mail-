@@ -10,7 +10,7 @@ export class Correo implements ICorreo {
   private readonly _contenido: string;
   private readonly _remitente: IContacto; //contacto que envia el correo
   private readonly _destinatarios: IContacto[]; //lista de contactos a los que se les envia el correo
-  private readonly _fechaCreacion: Date;
+  //private readonly _fechaCreacion: Date;
 
   private _leido: boolean; //estado de lectura
   private _favorito: boolean; //si se marco como favorito
@@ -45,7 +45,7 @@ export class Correo implements ICorreo {
     this._contenido = contenido; //guarda el contenido tal cual
     this._remitente = remitente; //guarda la referencia al contacto que envia el correo
     this._destinatarios = [...destinatarios]; //creamos una copia del arreglo destinatarios para evitar que haya cabios en el arreglo original
-    this._fechaCreacion = new Date();  //registra la fecha 
+    //this._fechaCreacion = new Date();  //registra la fecha 
 
     this._leido = false; //todo correo nuevo esta no leido
     this._favorito = false; //todo correo nuevo esta sin ser favorito
