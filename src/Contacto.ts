@@ -24,4 +24,19 @@ export class Contacto implements IContacto {
     this._email = emailNormalizado.toLowerCase();
   }
 
+  
+  public get id(): number {
+    return this._id;
+  }
+
+  public getNombre(): string {
+    return this._nombre;
+  }
+
+  public getEmail(): string {
+    return this._email;
+  }
+
+
+
 }
