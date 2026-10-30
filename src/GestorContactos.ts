@@ -11,7 +11,8 @@ export class GestorContactos {
     }
 
     public buscarContactoPorEmail(email: string): IContacto | undefined { //recibe un email y devuelve un contacto o undefined si no existe 
-        return this._contactos.find(contacto => contacto.getEmail() === email); 
+               const emailNormalizado = email.trim().toLowerCase(); //saca los espacios y lo pasa a minusculas, igual que hace Contacto
+        return this._contactos.find(contacto => contacto.getEmail() === emailNormalizado);
         // find es una funcion de orden superior, recibe otra funcion como parametro
         // la lambda devuelve true o false para cada contacto
         // find devuelve el primer contacto cuyo email coincida con el email recibido, o undefined si no hay ninguno
