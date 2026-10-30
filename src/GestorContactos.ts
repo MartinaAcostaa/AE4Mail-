@@ -7,6 +7,9 @@ export class GestorContactos {
     //readonly: siempre es el mismo arreglo, aunque se le puedan agregar elementos
 
     public agregarContacto(contacto: IContacto): void { //recibe un contacto y no devuelve nada
+        if (this.buscarContactoPorEmail (contacto.getEmail())) { //si ya existe un contacto con ese email
+            throw new Error('Ya existe un contacto con ese email.'); //lo rechaza y no lo agrega
+        }
         this._contactos.push(contacto); //agrega el contacto al final de la lista
     }
 
