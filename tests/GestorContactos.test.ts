@@ -25,4 +25,21 @@ describe('RF-03: Gestión de contactos', () => { //agrupa todos los tests del re
     // 2 y 3. buscar con mayusculas y espacios y comprobar que encuentra a la misma Ana
     expect(agenda.buscarContactoPorEmail('  ANA@Ejemplo.com ')).toBe(ana);
     });
+
+    it('no permite agregar dos contactos con el mismo mail', () => {
+        // 1. prepaarar agenda con Ana ya agregada
+        const agenda = new GestorContactos();
+        const ana = new Contacto('Ana', 'ana@ejemplo.com');
+        agenda.agregarContacto(ana);
+
+        // 2. actuar: intentar agregar otro contacto con el mismo mail pero en mayusuculas
+        const otraAna = new Contacto('Ana Gomez', 'ANA@EJEMPLO.COM');
+
+        // 3. comprobar: agregarlo tiene que tirar error 
+        // se ecribe () => ... para que expect ejecute la funcion y atrape el error
+        expect(() => agenda.agregarContacto(otraAna)).toThrow();
+
+        // y la agenda sigue teniendo solo a la primera Ana
+        expect(agenda.buscarContactoPorEmail('ana@ejemplo.com')).toBe(ana);
+    });
 });
