@@ -48,4 +48,20 @@ describe('RF-03: Validación de contactos', () => {  // test de la clase contact
     expect(() => ana.cambiarNombre('   ')).toThrow();
     expect(ana.getNombre()).toBe('Ana Gomez');
     });
+
+    it('permite cambiar el mail y rechaza un mail invalido', () => {
+    // 1. preparar
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+
+    // 2. actuar: cambiamos el mail (con mayusculas y espacios)
+    ana.cambiarEmail('  ANA.GOMEZ@Ejemplo.com ');
+
+    // 3. comprobar: se guarda normalizado y el nombre sigue igual
+    expect(ana.getEmail()).toBe('ana.gomez@ejemplo.com');
+    expect(ana.getNombre()).toBe('Ana');
+
+    // un mail invalido se rechaza y el contacto conserva el mail anterior
+    expect(() => ana.cambiarEmail('ana-sin-arroba')).toThrow();
+    expect(ana.getEmail()).toBe('ana.gomez@ejemplo.com');
+    });
 });
