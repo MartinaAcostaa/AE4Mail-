@@ -40,6 +40,10 @@ export class Contacto implements IContacto {
     return this._email;
   }
 
-
-
+  public cambiarNombre(nuevoNombre: string): void { //recibe el nombre nuevo y no devuelve nada
+    if (!nuevoNombre || nuevoNombre.trim().length === 0) {
+      throw new Error('El nombre es obligatorio.'); //misma validacion que en el constructor
+    }
+    this._nombre = nuevoNombre.trim(); //guarda el nombre nuevo sin espacios al inicio ni al final
+  }
 }

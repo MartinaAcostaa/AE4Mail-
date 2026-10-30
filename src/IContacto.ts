@@ -3,5 +3,5 @@ export interface IContacto {
 
     getNombre(): string;
     getEmail(): string;
-
+    cambiarNombre(nuevoNombre: string): void;
 }
