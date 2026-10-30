@@ -30,6 +30,10 @@ export class Contacto implements IContacto {
        this._nombre = Contacto.validarNombre(nuevoNombre); //usa la misma validacion que el constructor
   }
 
+  public cambiarEmail(nuevoEmail: string): void { //recibe el email nuevo y no devuelve nada
+    this._email = Contacto.validarEmail(nuevoEmail); //usa la misma validacion que el constructor
+  }
+
   private static validarNombre(nombre: string): string { //valida el nombre y lo devuelve listo para guardar 
     if (!nombre || nombre.trim().length === 0) {
       throw new Error('El nombre es obligatorio.'); //no puede estar vacio ni contener solo espacios
