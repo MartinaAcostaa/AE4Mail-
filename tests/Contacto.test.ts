@@ -32,4 +32,20 @@ describe('RF-03: Validación de contactos', () => {  // test de la clase contact
     expect(() => new Contacto('Ana', 'ana lopez@ejemplo.com')).toThrow(); //con espacio en el medio
     expect(() => new Contacto('Ana', '')).toThrow();                 //vacio
     });
+
+    it('permite cambiar el nombre y rechaza un nombre vacio', () => {
+    // 1. preparar
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+
+    // 2. actuar: cambiamos el nombre (con espacios para ver que tambien los saca)
+    ana.cambiarNombre('  Ana Gomez ');
+
+    // 3. comprobar: el nombre cambio y el mail sigue igual
+    expect(ana.getNombre()).toBe('Ana Gomez');
+    expect(ana.getEmail()).toBe('ana@ejemplo.com');
+
+    // un nombre vacio se rechaza y el contacto conserva el nombre anterior
+    expect(() => ana.cambiarNombre('   ')).toThrow();
+    expect(ana.getNombre()).toBe('Ana Gomez');
+    });
 });
