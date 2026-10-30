@@ -15,4 +15,14 @@ describe('RF-03: Gestión de contactos', () => { //agrupa todos los tests del re
     // toBe compara que sea el mismo objeto, no solo que tengan los mismos valores
     expect(agenda.buscarContactoPorEmail('ana@ejemplo.com')).toBe(ana);
     });
+
+    it('encuentra el contacto aunque el mail se escriba con mayusculas o espacios', () => {
+        // 1. preparar: Contacto guarda el mail en minusculas y sin espacios
+    const agenda = new GestorContactos();
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    agenda.agregarContacto(ana);
+
+    // 2 y 3. buscar con mayusculas y espacios y comprobar que encuentra a la misma Ana
+    expect(agenda.buscarContactoPorEmail('  ANA@Ejemplo.com ')).toBe(ana);
+    });
 });
