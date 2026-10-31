@@ -22,6 +22,17 @@ export class GestorCorreos {
             throw new Error('El asunto es obligatorio.');
         }
 
+        
+        // Verificamos que tenga al menos un destinatario valido
+        const destinatarios = correo.getDestinatarios();
+        if (
+            !Array.isArray(destinatarios) ||
+            destinatarios.length === 0 ||
+            destinatarios.some(destinatario => destinatario == null)
+        ) {
+            throw new Error('Debe existir al menos un destinatario válido.');
+        }
+
 
     }
 
