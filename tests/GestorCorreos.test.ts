@@ -42,7 +42,18 @@ describe('GestorCorreos', () => {
         expect(gestor.getEnviados()).toHaveLength(0);
     });
 
+    
+    it('RF 2: Debe almacenar el correo enviado en la Bandeja de Enviados', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
 
+        const correo = new Correo('Aviso', 'Se informa una novedad.', ana, [luis]);
+
+        gestor.enviarCorreo(correo);
+
+        expect(gestor.getEnviados()).toContain(correo);
+    });
 
 
 });
