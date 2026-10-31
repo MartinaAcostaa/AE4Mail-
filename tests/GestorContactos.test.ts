@@ -64,4 +64,33 @@ describe('RF-03: Gestión de contactos', () => { //agrupa todos los tests del re
 
     expect(() => agenda.modificarContacto('nadie@ejemplo.com', 'Nadie', 'nadie2@ejemplo.com')).toThrow();
     });
+
+    it('no permite cambiar el mail por uno que ya tiene otro contacto', () => {
+        // 1. preparar: agenda con Ana y Luis
+    const agenda = new GestorContactos();
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    const luis = new Contacto('Luis', 'luis@ejemplo.com');
+    agenda.agregarContacto(ana);
+    agenda.agregarContacto(luis);
+
+     // 2 y 3. querer ponerle a Ana el mail de Luis tiene que tirar error
+    expect(() => agenda.modificarContacto('ana@ejemplo.com', 'Ana Gomez', 'LUIS@ejemplo.com')).toThrow();
+
+    // Ana queda sin cambios
+    expect(ana.getEmail()).toBe('ana@ejemplo.com');
+    expect(ana.getNombre()).toBe('Ana');
+    });
+
+    it('permite cambiar solo el nombre dejando el mismo mail', () => {
+    const agenda = new GestorContactos();
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    agenda.agregarContacto(ana);
+
+    // el mail nuevo es el mismo que ya tiene Ana: no es un duplicado
+    agenda.modificarContacto('ana@ejemplo.com', 'Ana Gomez', 'ana@ejemplo.com');
+
+    expect(ana.getNombre()).toBe('Ana Gomez');
+    expect(ana.getEmail()).toBe('ana@ejemplo.com');
+    });
+
 });
