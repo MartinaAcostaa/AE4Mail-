@@ -42,7 +42,7 @@ describe('GestorCorreos', () => {
         expect(gestor.getEnviados()).toHaveLength(0);
     });
 
-    it('RF 2: no debe permitir crear un correo sin asunto', () => {
+    it('RF 2: No debe permitir crear un correo sin asunto', () => {
     const ana = new Contacto('Ana', 'ana@mail.com');
     const luis = new Contacto('Luis', 'luis@mail.com');
 
@@ -56,6 +56,36 @@ describe('GestorCorreos', () => {
     expect(() => new Correo('Reunion', 'Contenido', ana, []))
     .toThrow('Debe existir al menos un destinatario válido.');
     });
+
+    it('RF 2: No debe permitir enviar un correo sin remitente', () => {
+
+    const gestor = new GestorCorreos(); //creamos el gestor
+
+    const luis = new Contacto('Luis', 'luis@mail.com'); //creamos un destinatario valido
+
+    const correo = {     // Creamos un objeto que simula ser un correo
+        id: 100,
+
+        // El remitente devuelve null, es decir, el correo no tiene remitente
+        getRemitente: () => null,
+
+        // El asunto es valido.
+        getAsunto: () => 'Reunion',
+
+        // Tiene un destinatario valido.
+        getDestinatarios: () => [luis]
+
+    } as unknown as ICorreo;
+
+    // Intentamos enviarlo y comprobamos que se genere el error porque falta el remitente
+    expect(() => gestor.enviarCorreo(correo))
+        .toThrow('El remitente es obligatorio.');
+
+    // Comprobamos que no se haya almacenado.
+    expect(gestor.getEnviados()).toHaveLength(0);
+});
+
+    
 
     
     it('RF 2: Debe almacenar el correo enviado en la Bandeja de Enviados', () => {
