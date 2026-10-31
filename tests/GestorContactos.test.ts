@@ -93,4 +93,25 @@ describe('RF-03: Gestión de contactos', () => { //agrupa todos los tests del re
     expect(ana.getEmail()).toBe('ana@ejemplo.com');
     });
 
+        it('elimina un contacto de la agenda', () => {
+    // 1. preparar: agenda con Ana y Luis
+    const agenda = new GestorContactos();
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    const luis = new Contacto('Luis', 'luis@ejemplo.com');
+    agenda.agregarContacto(ana);
+    agenda.agregarContacto(luis);
+
+    // 2. actuar: eliminamos a Ana
+    agenda.eliminarContacto('ana@ejemplo.com');
+
+    // 3. comprobar: Ana ya no esta y Luis sigue
+    expect(agenda.buscarContactoPorEmail('ana@ejemplo.com')).toBeUndefined();
+    expect(agenda.buscarContactoPorEmail('luis@ejemplo.com')).toBe(luis);
+    });
+
+    it('no permite eliminar un contacto que no existe', () => {
+    const agenda = new GestorContactos();
+
+    expect(() => agenda.eliminarContacto('nadie@ejemplo.com')).toThrow();
+    });
 });
