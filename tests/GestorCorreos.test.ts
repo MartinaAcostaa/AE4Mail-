@@ -6,7 +6,7 @@ import { Contacto } from '../src/Contacto';
 
 describe('GestorCorreos', () => {
 
-    it('debe enviar un correo a un destinatario', () => {
+    it('RF2: Debe enviar un correo a un destinatario', () => {
     const gestor = new GestorCorreos();
     const ana = new Contacto('Ana', 'ana@mail.com');
     const luis = new Contacto('Luis', 'luis@mail.com');
@@ -18,6 +18,22 @@ describe('GestorCorreos', () => {
     expect(gestor.getEnviados()).toHaveLength(1);
     expect(gestor.getEnviados()[0]).toBe(correo);
 });
+
+  it('RF 2: Debe enviar un correo a varios destinatarios', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+        const maria = new Contacto('Maria', 'maria@mail.com');
+
+        const correo = new Correo('Trabajo grupal', 'Les envío el trabajo.', ana, [luis, maria]);
+
+        gestor.enviarCorreo(correo);
+
+        expect(gestor.getEnviados()).toHaveLength(1);
+        expect(gestor.getEnviados()[0].getDestinatarios()).toHaveLength(2);
+    });
+
+
 
 
 });
