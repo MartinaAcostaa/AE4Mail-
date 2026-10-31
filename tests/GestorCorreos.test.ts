@@ -33,13 +33,21 @@ describe('GestorCorreos', () => {
         expect(gestor.getEnviados()[0].getDestinatarios()).toHaveLength(2);
     });
 
-     it('RF 2: o debe permitir enviar un correo inexistente', () => {
+     it('RF 2: No debe permitir enviar un correo inexistente', () => {
         const gestor = new GestorCorreos();
 
         expect(() => gestor.enviarCorreo(null as unknown as ICorreo))
         .toThrow('El correo es obligatorio.');
 
         expect(gestor.getEnviados()).toHaveLength(0);
+    });
+
+    it('RF 2: no debe permitir crear un correo sin asunto', () => {
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    expect(() => new Correo('   ', 'Contenido', ana, [luis]))
+        .toThrow('El asunto es obligatorio.');
     });
 
     
