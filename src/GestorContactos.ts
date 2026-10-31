@@ -33,5 +33,14 @@ export class GestorContactos {
         contacto.cambiarNombre(nuevoNombre); //Contacto valida que el nombre no este vacio
         contacto.cambiarEmail(nuevoEmail); //Contacto valida el formato del mail
     }
+
+    public eliminarContacto(email: string): void { //recibe el mail del contacto a eliminar
+        const contacto = this.buscarContactoPorEmail(email); //busca el contacto
+        if (!contacto) { //si no existe no hay nada que eliminar
+            throw new Error('No existe un contacto con ese email.');
+        }
+        const posicion = this._contactos.indexOf(contacto); //busca en que posicion del arreglo esta
+        this._contactos.splice(posicion, 1); //lo saca del arreglo: desde esa posicion, 1 elemento
+    }
 }
 
