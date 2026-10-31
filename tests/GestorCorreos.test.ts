@@ -55,5 +55,26 @@ describe('GestorCorreos', () => {
         expect(gestor.getEnviados()).toContain(correo);
     });
 
+    
+    it('RF 2; Debe permitir enviar diferentes correos sin perder los anteriores', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+        const maria = new Contacto('Maria', 'maria@mail.com');
+
+        const correo1 = new Correo('Primer correo', 'Contenido 1', ana, [luis]);
+        const correo2 = new Correo('Segundo correo', 'Contenido 2', ana, [maria]);
+
+        gestor.enviarCorreo(correo1);
+        gestor.enviarCorreo(correo2);
+
+        expect(gestor.getEnviados()).toHaveLength(2);
+        expect(gestor.getEnviados()).toContain(correo1);
+        expect(gestor.getEnviados()).toContain(correo2);
+    });
+
+
+
+
 
 });
