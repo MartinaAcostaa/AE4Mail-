@@ -33,14 +33,20 @@ describe('GestorCorreos', () => {
         expect(gestor.getEnviados()[0].getDestinatarios()).toHaveLength(2);
     });
 
-     it('RF 2: No debe permitir enviar un correo inexistente', () => {
-        const gestor = new GestorCorreos();
+    it('RF 2: No debe permitir enviar un correo inexistente', () => {
 
-        expect(() => gestor.enviarCorreo(null as unknown as ICorreo))
+    const gestor = new GestorCorreos(); // Creamos un gestor vacio
+
+    // Intentamos enviar null en lugar de un objeto Correo
+    // as unknown as ICorreo permite pasar ese valor
+    // aunque el método espera recibir un ICorreo
+    expect(() => gestor.enviarCorreo(null as unknown as ICorreo))
+        // Comprobamos que se genere el error correspondiente.
         .toThrow('El correo es obligatorio.');
 
-        expect(gestor.getEnviados()).toHaveLength(0);
-    });
+    // Verificamos que no se haya almacenado ningún correo
+    expect(gestor.getEnviados()).toHaveLength(0);
+});
 
     it('RF 2: No debe permitir crear un correo sin asunto', () => {
     const ana = new Contacto('Ana', 'ana@mail.com');
@@ -66,6 +72,7 @@ describe('GestorCorreos', () => {
     const luis = new Contacto('Luis', 'luis@mail.com');
 
     const correo = {  // Creamos un objeto que simula ser un correo
+        //No usamos la clase Correo porque su constructor ya impediria crear un correo con destinatarios invalido
         id: 103,
 
         // Devuelve a Ana como remitente
@@ -85,20 +92,6 @@ describe('GestorCorreos', () => {
         .toThrow('Debe existir al menos un destinatario válido.');
 
     // Comprobamos que el correo no se haya almacenado
-    expect(gestor.getEnviados()).toHaveLength(0);
-});
-
-    it('RF 2: No debe permitir enviar un correo inexistente', () => {
-    const gestor = new GestorCorreos(); // Creamos un gestor vacio
-
-    // Intentamos enviar null en lugar de un objeto Correo
-    // as unknown as ICorreo permite pasar ese valor
-    // aunque el método espera recibir un ICorreo
-    expect(() => gestor.enviarCorreo(null as unknown as ICorreo))
-        // Comprobamos que se genere el error
-        .toThrow('El correo es obligatorio.');
-
-    // Verificamos que no se haya almacenado ningun correo
     expect(gestor.getEnviados()).toHaveLength(0);
 });
 
@@ -128,8 +121,7 @@ describe('GestorCorreos', () => {
 
     // Comprobamos que no se haya almacenado.
     expect(gestor.getEnviados()).toHaveLength(0);
-});
-
+   });
     
 
     
