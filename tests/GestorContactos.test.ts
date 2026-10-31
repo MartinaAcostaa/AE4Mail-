@@ -42,4 +42,26 @@ describe('RF-03: Gestión de contactos', () => { //agrupa todos los tests del re
         // y la agenda sigue teniendo solo a la primera Ana
         expect(agenda.buscarContactoPorEmail('ana@ejemplo.com')).toBe(ana);
     });
+
+    it('modifica el nombre y el mail de un contacto existente', () => {
+    // 1. preparar: agenda con Ana
+    const agenda = new GestorContactos();
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    agenda.agregarContacto(ana);
+
+    // 2. actuar: la buscamos por su mail actual y le cambiamos nombre y mail
+    agenda.modificarContacto('ana@ejemplo.com', 'Ana Gomez', 'ana.gomez@ejemplo.com');
+
+    // 3. comprobar: se encuentra con el mail nuevo, es el mismo objeto y tiene el nombre nuevo
+    expect(agenda.buscarContactoPorEmail('ana.gomez@ejemplo.com')).toBe(ana);
+    expect(ana.getNombre()).toBe('Ana Gomez');
+    // con el mail viejo ya no se encuentra
+    expect(agenda.buscarContactoPorEmail('ana@ejemplo.com')).toBeUndefined();
+    });
+
+    it('no permite modificar un contacto que no existe', () => {
+    const agenda = new GestorContactos();
+
+    expect(() => agenda.modificarContacto('nadie@ejemplo.com', 'Nadie', 'nadie2@ejemplo.com')).toThrow();
+    });
 });
