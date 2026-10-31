@@ -57,6 +57,37 @@ describe('GestorCorreos', () => {
     .toThrow('Debe existir al menos un destinatario válido.');
     });
 
+    it('RF 2: No debe permitir enviar un correo con destinatarios invalidos', () => {
+
+    const gestor = new GestorCorreos(); // Creamos el gestor de correos
+
+    // Creamos dos contactos
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    const correo = {  // Creamos un objeto que simula ser un correo
+        id: 103,
+
+        // Devuelve a Ana como remitente
+        getRemitente: () => ana,
+
+        // Devuelve el asunto del correo
+        getAsunto: () => 'Reunion',
+
+        // Devuelve una lista con un destinatario valido
+        // (Luis) y uno inválido (null)
+        getDestinatarios: () => [luis, null]
+
+    } as unknown as ICorreo;
+
+    // Intentamos enviar el correo y comprobamos que se genere el error por tener destinatarios invalidos
+    expect(() => gestor.enviarCorreo(correo))
+        .toThrow('Debe existir al menos un destinatario válido.');
+
+    // Comprobamos que el correo no se haya almacenado
+    expect(gestor.getEnviados()).toHaveLength(0);
+});
+
     it('RF 2: No debe permitir enviar un correo inexistente', () => {
     const gestor = new GestorCorreos(); // Creamos un gestor vacio
 
