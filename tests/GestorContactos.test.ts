@@ -1,6 +1,7 @@
 import  { describe, it, expect } from 'vitest';
 import { Contacto } from '../src/Contacto';
 import { GestorContactos } from '../src/GestorContactos';
+import { Correo } from '../src/Correo';
 
 describe('RF-03: Gestión de contactos', () => { //agrupa todos los tests del requerimiento 3
     it('agrega un contacto y lo encuentra por su mail', () => { //describe lo q se espera que pase
@@ -93,7 +94,7 @@ describe('RF-03: Gestión de contactos', () => { //agrupa todos los tests del re
     expect(ana.getEmail()).toBe('ana@ejemplo.com');
     });
 
-        it('elimina un contacto de la agenda', () => {
+    it('elimina un contacto de la agenda', () => {
     // 1. preparar: agenda con Ana y Luis
     const agenda = new GestorContactos();
     const ana = new Contacto('Ana', 'ana@ejemplo.com');
@@ -113,5 +114,26 @@ describe('RF-03: Gestión de contactos', () => { //agrupa todos los tests del re
     const agenda = new GestorContactos();
 
     expect(() => agenda.eliminarContacto('nadie@ejemplo.com')).toThrow();
+    });
+
+    it('eliminar un contacto no borra los correos que lo tienen como remitente o destinatario', () => {
+    // 1. preparar: agenda con Ana y Luis, y un correo de Ana para Luis
+    const agenda = new GestorContactos();
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+    const luis = new Contacto('Luis', 'luis@ejemplo.com');
+    agenda.agregarContacto(ana);
+    agenda.agregarContacto(luis);
+    const correo = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
+
+    // 2. actuar: eliminamos a los dos de la agenda
+    agenda.eliminarContacto('ana@ejemplo.com');
+    agenda.eliminarContacto('luis@ejemplo.com');
+
+    // 3. comprobar: ya no estan en la agenda...
+    expect(agenda.buscarContactoPorEmail('ana@ejemplo.com')).toBeUndefined();
+    //pero el correo sigue teniendo a Ana como remitente y a Luis como destinatario
+    expect(correo.getRemitente()).toBe(ana);
+    expect(correo.getRemitente().getEmail()).toBe('ana@ejemplo.com');
+    expect(correo.getDestinatarios()).toEqual([luis]);
     });
 });
