@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { GestorCorreos } from '../src/GestorCorreos';
 import { Correo } from '../src/Correo';
 import { Contacto } from '../src/Contacto';
-
+import { ICorreo } from '../src/ICorreo';
 describe('GestorCorreos', () => {
 
     it('RF2: Debe enviar un correo a un destinatario', () => {
@@ -31,6 +31,15 @@ describe('GestorCorreos', () => {
 
         expect(gestor.getEnviados()).toHaveLength(1);
         expect(gestor.getEnviados()[0].getDestinatarios()).toHaveLength(2);
+    });
+
+     it('RF 2: o debe permitir enviar un correo inexistente', () => {
+        const gestor = new GestorCorreos();
+
+        expect(() => gestor.enviarCorreo(null as unknown as ICorreo))
+        .toThrow('El correo es obligatorio.');
+
+        expect(gestor.getEnviados()).toHaveLength(0);
     });
 
 
