@@ -57,6 +57,20 @@ describe('GestorCorreos', () => {
     .toThrow('Debe existir al menos un destinatario válido.');
     });
 
+    it('RF 2: No debe permitir enviar un correo inexistente', () => {
+    const gestor = new GestorCorreos(); // Creamos un gestor vacio
+
+    // Intentamos enviar null en lugar de un objeto Correo
+    // as unknown as ICorreo permite pasar ese valor
+    // aunque el método espera recibir un ICorreo
+    expect(() => gestor.enviarCorreo(null as unknown as ICorreo))
+        // Comprobamos que se genere el error
+        .toThrow('El correo es obligatorio.');
+
+    // Verificamos que no se haya almacenado ningun correo
+    expect(gestor.getEnviados()).toHaveLength(0);
+});
+
     it('RF 2: No debe permitir enviar un correo sin remitente', () => {
 
     const gestor = new GestorCorreos(); //creamos el gestor
