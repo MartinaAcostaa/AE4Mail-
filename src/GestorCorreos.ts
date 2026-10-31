@@ -33,6 +33,9 @@ export class GestorCorreos {
             throw new Error('Debe existir al menos un destinatario válido.');
         }
 
+         // Registramos el correo en la Bandeja de Enviados
+        this._enviados.push(correo);
+
 
     }
 
