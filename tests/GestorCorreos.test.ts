@@ -73,6 +73,21 @@ describe('GestorCorreos', () => {
         expect(gestor.getEnviados()).toContain(correo2);
     });
 
+    it('RF2: Debe devolver una copia de la Bandeja de Enviados', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+
+        const correo = new Correo('Reunion', 'Nos reunimos mañana.', ana, [luis]);
+
+        gestor.enviarCorreo(correo);
+
+        const enviados = gestor.getEnviados();
+        enviados.pop();
+
+        expect(gestor.getEnviados()).toHaveLength(1);
+    });
+
 
 
 
