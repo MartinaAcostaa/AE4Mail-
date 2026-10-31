@@ -26,6 +26,10 @@ export class GestorContactos {
         if (!contacto) { //si no existe, buscar devolvio undefined
             throw new Error('No existe un contacto con ese email.');
         }
+        const otroContacto = this.buscarContactoPorEmail(nuevoEmail); //busca si alguien ya tiene el mail nuevo
+        if (otroContacto && otroContacto !== contacto) { //si lo tiene OTRO contacto (no el mismo que estamos modificando)
+            throw new Error('Ya existe otro contacto con ese email.'); //lo rechaza antes de cambiar nada
+        }
         contacto.cambiarNombre(nuevoNombre); //Contacto valida que el nombre no este vacio
         contacto.cambiarEmail(nuevoEmail); //Contacto valida el formato del mail
     }
