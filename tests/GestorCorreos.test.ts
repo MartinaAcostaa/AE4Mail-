@@ -50,6 +50,13 @@ describe('GestorCorreos', () => {
         .toThrow('El asunto es obligatorio.');
     });
 
+    it('RF 2: No debe permitir crear un correo sin destinatarios', () => {
+    const ana = new Contacto('Ana', 'ana@mail.com');
+
+    expect(() => new Correo('Reunion', 'Contenido', ana, []))
+    .toThrow('Debe existir al menos un destinatario válido.');
+    });
+
     
     it('RF 2: Debe almacenar el correo enviado en la Bandeja de Enviados', () => {
         const gestor = new GestorCorreos();
