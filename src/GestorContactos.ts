@@ -20,5 +20,14 @@ export class GestorContactos {
         // la lambda devuelve true o false para cada contacto
         // find devuelve el primer contacto cuyo email coincida con el email recibido, o undefined si no hay ninguno
     }
+
+    public modificarContacto(emailActual: string, nuevoNombre: string, nuevoEmail: string): void { //recibe el mail actual para encontrarlo y los datos nuevos
+        const contacto = this.buscarContactoPorEmail(emailActual); //busca el contacto que se quiere modificar
+        if (!contacto) { //si no existe, buscar devolvio undefined
+            throw new Error('No existe un contacto con ese email.');
+        }
+        contacto.cambiarNombre(nuevoNombre); //Contacto valida que el nombre no este vacio
+        contacto.cambiarEmail(nuevoEmail); //Contacto valida el formato del mail
+    }
 }
 
