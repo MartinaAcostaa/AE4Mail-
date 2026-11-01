@@ -159,6 +159,27 @@ describe('GestorCorreos', () => {
         expect(gestor.getEnviados()).toContain(correo); // Se comprueba que el correo enviado este dentro de esa coleccion
     });
 
+    it('RF2: No debe permitir enviar dos veces el mismo correo', () => {
+    const gestor = new GestorCorreos();
+
+    // Creamos dos contactos
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    // Creamos un correo
+    const correo = new Correo('Reunion', 'Contenido', ana, [luis]);
+
+    // Enviamos el correo por primera vez
+    gestor.enviarCorreo(correo);
+
+    // Intentamos enviar nuevamente el mismo correo
+    expect(() => gestor.enviarCorreo(correo))
+        .toThrow('Este correo ya fue enviado.');
+
+    // Comprobamos que el correo esté almacenado una sola vez
+    expect(gestor.getEnviados()).toHaveLength(1);
+    });
+
     
     it('RF 2; Debe permitir enviar diferentes correos sin perder los anteriores', () => {
         const gestor = new GestorCorreos(); // Creamos un gestor nuevo
