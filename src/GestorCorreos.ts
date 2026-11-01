@@ -4,6 +4,7 @@ import { ICorreo } from './ICorreo';
 export class GestorCorreos {
 
     private readonly _enviados: ICorreo[] = [];
+    private readonly _entrada: ICorreo[] = []; //Bandeja de Entrada: correos que llegan
 
     public enviarCorreo(correo: ICorreo): void {
 
@@ -48,6 +49,15 @@ export class GestorCorreos {
 
     public getEnviados(): ICorreo[] {
         return [...this._enviados];
+    }
+
+    
+    public recibirCorreo(correo: ICorreo): void { //simula que llega un correo (no hay servidor real)
+        this._entrada.push(correo); //lo guarda en la Bandeja de Entrada
+    }
+
+    public getEntrada(): ICorreo[] { //devuelve una copia para que no se modifique la bandeja desde afuera
+        return [...this._entrada];
     }
 
 }
