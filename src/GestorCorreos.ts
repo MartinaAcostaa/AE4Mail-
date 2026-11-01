@@ -34,6 +34,12 @@ export class GestorCorreos {
             throw new Error('Debe existir al menos un destinatario válido.'); //si la condicion se cumple (devuelve true) se genera el error
         }
 
+        // Verificamos que el correo no haya sido enviado anteriormente
+        const yaEnviado = this._enviados.some(enviado => enviado.id === correo.id);
+
+        if (yaEnviado) { // Si ya fue enviado lanza error
+            throw new Error('Este correo ya fue enviado.');}
+
          // Registramos el correo en la Bandeja de Enviados
         this._enviados.push(correo);
 
