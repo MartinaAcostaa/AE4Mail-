@@ -295,4 +295,26 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]); // Se espera que se encuentre el correo por el remitente
     });
 
+     it('RF4.4: Debe buscar por email del remitente', () => {
+
+        const gestor = new GestorCorreos(); // creamos un nuevo gestor
+
+        // creamos dos contactos
+
+        const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+        const luis = new Contacto('Luis Perez', 'luis@mail.com');
+
+        const correo = new Correo( // creamos un correo
+            'Reunion',
+            'Contenido del correo.',
+            ana,
+            [luis]
+        );
+
+        const resultado = gestor.buscarCorreos([correo], 'ana@mail.com'); 
+        // Buscamos el correo por email del remitente
+
+        expect(resultado).toEqual([correo]); // esperamos que se encuentre el correo
+    });
+
 });
