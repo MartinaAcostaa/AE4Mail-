@@ -229,7 +229,7 @@ describe('GestorCorreos', () => {
 
 describe('RF4: Búsqueda de correos', () => {
 
-    it('RF4.1: Debe buscar coincidencias en el asunto', () => {
+    it('RF4: Debe buscar coincidencias en el asunto', () => {
 
         // Creamos un gestor para esta prueba
         const gestor = new GestorCorreos();
@@ -253,7 +253,7 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]);
     });
 
-     it('RF4.2: Debe buscar coincidencias en el contenido', () => {
+     it('RF4: Debe buscar coincidencias en el contenido', () => {
 
         const gestor = new GestorCorreos(); // Se crea un nuevo gestor
 
@@ -274,7 +274,7 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]); //esperamos que se encuente el correo
     });
 
-     it('RF4.3: Debe buscar por nombre del remitente', () => {
+     it('RF4: Debe buscar por nombre del remitente', () => {
 
         const gestor = new GestorCorreos(); // se crea un nuevo gestor
 
@@ -295,7 +295,7 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]); // Se espera que se encuentre el correo por el remitente
     });
 
-     it('RF4.4: Debe buscar por email del remitente', () => {
+     it('RF4: Debe buscar por email del remitente', () => {
 
         const gestor = new GestorCorreos(); // creamos un nuevo gestor
 
@@ -317,7 +317,7 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]); // esperamos que se encuentre el correo
     });
 
-     it('RF4.5: Debe buscar por nombre de un destinatario', () => {
+     it('RF4: Debe buscar por nombre de un destinatario', () => {
 
         const gestor = new GestorCorreos(); // se crea un nuevo gestor
 
@@ -337,6 +337,48 @@ describe('RF4: Búsqueda de correos', () => {
 
         expect(resultado).toEqual([correo]); 
         // esperamos que se encuentre el correo
+    });
+
+     it('RF4: Debe buscar por email de un destinatario', () => {
+
+        const gestor = new GestorCorreos(); // se crea un nuevo gestor
+
+        // se crean dos contactos
+        const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+        const luis = new Contacto('Luis Perez', 'luis@mail.com');
+
+        const correo = new Correo( // se crea un nuevo correo
+            'Reunion',
+            'Contenido del correo.',
+            ana,
+            [luis]
+        );
+
+        const resultado = gestor.buscarCorreos([correo], 'luis@mail.com');
+        // se busca el correo por el email del destinatario
+
+        expect(resultado).toEqual([correo]); // se espera que se encuentre el correo
+    });
+
+    it('RF4.7: Debe ignorar mayusculas y minusculas', () => {
+
+        const gestor = new GestorCorreos();  // se crea un nuevo gestor
+
+        // se crean 2 contactos
+        const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+        const luis = new Contacto('Luis Perez', 'luis@mail.com');
+
+        const correo = new Correo( // se crea un nuevo correo
+            'Reunion de equipo',
+            'Contenido del correo.',
+            ana,
+            [luis]
+        );
+
+        const resultado = gestor.buscarCorreos([correo], 'REUNION'); 
+        // se busca el correo con la palabra reunion en mayusculas
+
+        expect(resultado).toEqual([correo]); // se espera que se encuentre el correo de igual forma
     });
 
 });
