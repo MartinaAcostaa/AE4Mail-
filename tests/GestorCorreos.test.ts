@@ -447,6 +447,15 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([]); // se espera que se devuelva una lista vacia
     });
 
+     it('RF4.11: Debe devolver una lista vacia si el texto esta vacio', () => {
+
+        const gestor = new GestorCorreos();  // se crea un nuevo gestor
+
+        const resultado = gestor.buscarCorreos([], '   '); // se hace una busqueda con texto vacio
+
+        expect(resultado).toEqual([]);  // se espera que devuelva una lista vacia
+    });
+
 
 
 });
