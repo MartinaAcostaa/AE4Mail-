@@ -60,4 +60,43 @@ export class GestorCorreos {
         return [...this._entrada];
     }
 
+   public buscarCorreos(correos: ICorreo[], texto: string): ICorreo[] {
+
+    const busqueda = texto.trim().toLowerCase();
+
+    // Si el texto está vacío o la bandeja no existe o está vacía.
+    if (!busqueda || !correos || correos.length === 0) {
+        return [];
+    }
+
+    return correos.filter(correo => {
+
+        const remitente = correo.getRemitente();
+        const destinatarios = correo.getDestinatarios();
+
+        // Buscamos en el asunto y contenido.
+        const coincideAsunto =
+            correo.getAsunto().toLowerCase().includes(busqueda);
+
+        const coincideContenido =
+            correo.getContenido().toLowerCase().includes(busqueda);
+
+        // Buscamos en el nombre y email del remitente.
+        const coincideRemitente =
+            remitente.getNombre().toLowerCase().includes(busqueda) ||
+            remitente.getEmail().toLowerCase().includes(busqueda);
+
+        // Buscamos en el nombre y email de los destinatarios.
+        const coincideDestinatario = destinatarios.some(destinatario =>
+            destinatario.getNombre().toLowerCase().includes(busqueda) ||
+            destinatario.getEmail().toLowerCase().includes(busqueda)
+        );
+
+        // Si coincide en al menos uno de los campos, incluimos el correo.
+        return coincideAsunto ||
+               coincideContenido ||
+               coincideRemitente ||
+               coincideDestinatario;
+    });
+}
 }

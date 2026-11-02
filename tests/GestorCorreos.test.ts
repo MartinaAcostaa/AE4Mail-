@@ -225,8 +225,32 @@ describe('GestorCorreos', () => {
         // Se comprueba que el correo siga almacenado en enviados
     });
 
+});
 
+describe('RF4: Búsqueda de correos', () => {
 
+    it('RF4.1: Debe buscar coincidencias en el asunto', () => {
 
+        // Creamos un gestor para esta prueba.
+        const gestor = new GestorCorreos();
+
+        // Creamos los contactos.
+        const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+        const luis = new Contacto('Luis Perez', 'luis@mail.com');
+
+        // Creamos un correo.
+        const correo = new Correo(
+            'Reunion de equipo',
+            'Tenemos una reunion el lunes.',
+            ana,
+            [luis]
+        );
+
+        // Realizamos la búsqueda.
+        const resultado = gestor.buscarCorreos([correo], 'Reunion');
+
+        // Comprobamos que encuentre el correo.
+        expect(resultado).toEqual([correo]);
+    });
 
 });
