@@ -426,6 +426,27 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado[0]).toBe(correo); // se espera que el resultado de la busqueda sea el correo
     });
 
+    it('RF4.10: Debe devolver una lista vacia si no encuentra coincidencias', () => {
+
+        const gestor = new GestorCorreos(); // se crea un nuevo gestor
+
+        // se crean dos contactos
+        const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+        const luis = new Contacto('Luis Perez', 'luis@mail.com');
+
+        const correo = new Correo( // se crea un nuevo correo
+            'Reunion',
+            'Contenido del correo.',
+            ana,
+            [luis]
+        );
+
+        const resultado = gestor.buscarCorreos([correo], 'inexistente'); 
+        // se realia una busqueda con una palabra que no dara resultado
+
+        expect(resultado).toEqual([]); // se espera que se devuelva una lista vacia
+    });
+
 
 
 });
