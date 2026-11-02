@@ -381,4 +381,27 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]); // se espera que se encuentre el correo de igual forma
     });
 
+     it('RF4.8: Debe permitir coincidencias parciales', () => {
+
+        const gestor = new GestorCorreos();  // se crea un nuevo gestor
+
+        // se crean 2 contactos
+        const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+        const luis = new Contacto('Luis Perez', 'luis@mail.com');
+
+        const correo = new Correo( // Se crea un nuevo correo
+            'Documentacion',
+            'Contenido del correo.',
+            ana,
+            [luis]
+        );
+
+        const resultado = gestor.buscarCorreos([correo], 'docum'); 
+        // se busca el correo solo escribiendo 'docum'
+
+        expect(resultado).toEqual([correo]); 
+        // se espera que se encuentre el correo de igual manera
+    });
+
+
 });
