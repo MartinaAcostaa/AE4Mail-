@@ -360,7 +360,7 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]); // se espera que se encuentre el correo
     });
 
-    it('RF4.7: Debe ignorar mayusculas y minusculas', () => {
+    it('RF4: Debe ignorar mayusculas y minusculas', () => {
 
         const gestor = new GestorCorreos();  // se crea un nuevo gestor
 
@@ -381,7 +381,7 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]); // se espera que se encuentre el correo de igual forma
     });
 
-     it('RF4.8: Debe permitir coincidencias parciales', () => {
+     it('RF4: Debe permitir coincidencias parciales', () => {
 
         const gestor = new GestorCorreos();  // se crea un nuevo gestor
 
@@ -402,6 +402,30 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([correo]); 
         // se espera que se encuentre el correo de igual manera
     });
+
+    it('RF4: No debe repetir un correo si coincide en varios campos', () => {
+
+        const gestor = new GestorCorreos();  // se crea un nuevo gestor
+
+        // se crea un nuevo contacto
+        const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+
+        // Ana aparece como remitente y destinataria.
+        const correo = new Correo(
+            'Reunion con Ana',
+            'Contenido para Ana.',
+            ana,
+            [ana]
+        );
+
+        const resultado = gestor.buscarCorreos([correo], 'ana');
+        // se busca el correo 
+
+        // Comprobamos que el correo aparezca una sola vez.
+        expect(resultado).toHaveLength(1); // se espera que aparezca una sola vez
+        expect(resultado[0]).toBe(correo); // se espera que el resultado de la busqueda sea el correo
+    });
+
 
 
 });
