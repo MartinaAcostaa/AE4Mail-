@@ -466,6 +466,37 @@ describe('RF4: Búsqueda de correos', () => {
         expect(resultado).toEqual([]); // se espera que se devuelva una lista vacia
     });
 
+     it('RF4.13: No debe modificar la bandeja original', () => {
+
+        const gestor = new GestorCorreos();  // se crea un nuevo gestor
+
+        // se crean 2 contactos
+        const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+        const luis = new Contacto('Luis Perez', 'luis@mail.com');
+
+        const correo = new Correo( // se crea un correo
+            'Reunion',
+            'Contenido del correo.',
+            ana,
+            [luis]
+        );
+
+        // Creamos la bandeja original
+        const bandeja = [correo];
+
+        // Guardamos una copia antes de realizar la busqueda
+        const copiaOriginal = [...bandeja];
+
+        // Realizamos la busqueda
+        gestor.buscarCorreos(bandeja, 'reunion');
+
+        // Verificamos que la bandeja siga teniendo los mismos elementos
+        expect(bandeja).toEqual(copiaOriginal); 
+        // esperamos que la bandeja sea igual a la copia original
+
+        expect(bandeja).toHaveLength(1); // esperamos que la bandeja tenga 1 elemento
+    });
+
 
 
 });
