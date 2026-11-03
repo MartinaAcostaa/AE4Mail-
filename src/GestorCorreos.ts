@@ -60,6 +60,10 @@ export class GestorCorreos {
         return [...this._entrada];
     }
 
+    public buscarEnEntrada(texto: string): ICorreo[] { //busca solo en la Bandeja de Entrada, como pide RF-04
+        return this.buscarCorreos(this._entrada, texto); //reutiliza la busqueda pasandole la Entrada
+    }
+
    public buscarCorreos(correos: ICorreo[], texto: string): ICorreo[] {
 
     const busqueda = texto.trim().toLowerCase();
