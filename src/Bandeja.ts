@@ -10,6 +10,14 @@ export abstract class Bandeja {
         this._correos.push(correo);
     }
 
+    public quitarCorreo(correo: ICorreo): void { //saca un correo de la bandeja
+        const posicion = this._correos.findIndex(guardado => guardado.id === correo.id); //busca en que posicion esta
+        if (posicion === -1) { //findIndex devuelve -1 si no lo encuentra
+            throw new Error('El correo no está en esta bandeja.');
+        }
+        this._correos.splice(posicion, 1); //saca el correo del arreglo: desde esa posicion, 1 elemento
+    }
+
     public contieneCorreo(correo: ICorreo): boolean { //devuelve true si el correo ya esta en la bandeja
         return this._correos.some(guardado => guardado.id === correo.id); //recorre la lista de correos y devuelve true si encuentra uno con el mismo id
     }
