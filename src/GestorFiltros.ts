@@ -14,6 +14,7 @@ export class GestorFiltros {
         return [...this._filtros];
     }
 
+    // agregar filtro nuevo
     public agregarFiltro(filtro: FiltroCorreo): void {
         if (!filtro) { // si no hay nombre de filtro arroja error
             throw new Error('El filtro es obligatorio.');
@@ -32,7 +33,7 @@ export class GestorFiltros {
             throw new Error('Ya existe un filtro con ese nombre.');
         }
 
-        this._filtros.push(filtro);
+        this._filtros.push(filtro); // agrega el filtro al arreglo de correos
     }
 
     // Aplica un filtro a una colección de correos
