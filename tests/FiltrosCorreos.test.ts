@@ -286,6 +286,38 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         expect(resultadoEnviados).toEqual([]);
     });
 
+    // TEST 10: No modificar la coleccion original
+    it('Rf 5: No debe modificar el arreglo original al aplicar un filtro', () => {
+
+        const gestor = new GestorFiltros();    // Creamos un gestor nuevo
+
+        const filtro = new FiltroCorreo( // Creamos un filtro
+            'Examen',
+            correo => correo.getAsunto().toLowerCase().includes('examen')
+        );
+
+        gestor.agregarFiltro(filtro); // Registramos el filtro
+
+        // Creamos dos correos y los guardamos en un arreglo
+        const correo1 = crearCorreo('Examen', 'Contenido', 'ana@mail.com');
+        const correo2 = crearCorreo('Reunión', 'Contenido', 'juan@mail.com');
+        const correos = [correo1, correo2];
+
+        // Guardamos una copia del arreglo antes de aplicar el filtro
+        const copiaOriginal = [...correos];
+
+        // Aplicamos el filtro
+        const resultado = gestor.aplicarFiltro('Examen', correos);
+
+        // Comprobamos que el arreglo original conserve sus elementos
+        expect(correos).toEqual(copiaOriginal);
+
+        // Comprobamos que el resultado sea un arreglo diferente
+        expect(resultado).not.toBe(correos);
+
+        // Comprobamos que el resultado contenga solamente un correo
+        expect(resultado).toEqual([correo1]);
+    });
 
 
 
