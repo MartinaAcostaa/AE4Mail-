@@ -37,4 +37,38 @@ describe('RF-06: Bandejas', () => {
         expect(entrada.getCorreos()).toHaveLength(1);
         expect(entrada.contieneCorreo(correo)).toBe(true);
     });
+
+    it ("quita un correo de la bandeja" , () => {
+        // una bandeja con dos correos 
+        const entrada = new BandejaEntrada()
+        const ana = new Contacto('Ana', 'ana@mail.com')
+        const luis = new Contacto('Luis', 'luis@mail.com')
+        const correo1 = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
+        const correo2 = new Correo('Proyecto', 'Te paso el informe', luis, [ana]);
+        entrada.agregarCorreo(correo1);
+        entrada.agregarCorreo(correo2);
+
+        // quitamos el primer correo de la bandeja
+        entrada.quitarCorreo(correo1);
+
+        // comprobamos que solo quede el segundo correo
+        expect(entrada.getCorreos()).toEqual([correo2]);
+        expect(entrada.contieneCorreo(correo1)).toBe(false);
+    });
+
+    it ("no permite quitar un correo que no esta en la bandeja" , () => {
+        // una bandeja con un correo , y otro correo que no esta en la bandeja
+        const entrada = new BandejaEntrada()
+        const ana = new Contacto('Ana', 'ana@mail.com')
+        const luis = new Contacto('Luis', 'luis@mail.com')
+        const guardado = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
+        const otro = new Correo('Proyecto', 'Te paso el informe', luis, [ana]);
+        entrada.agregarCorreo(guardado);
+
+        // intentar quitar el otro correo lanza un error
+        expect(() => entrada.quitarCorreo(otro)).toThrow();
+
+        // y la bandeja sigue teniendo solo el correo guardado
+        expect(entrada.getCorreos()).toEqual([guardado]);
+    });
 });
