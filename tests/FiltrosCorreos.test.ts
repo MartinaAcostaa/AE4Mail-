@@ -208,6 +208,51 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         expect(resultado).toEqual([correo1]); // se espera que se devuelva el primero
     });
 
+     // TEST 8: Reutilizar una condicion en distintos filtros
+    it('Rf5: Debe permitir reutilizar predicados para crear filtros', () => {
+
+        // Creamos un gestor nuevo
+        const gestor = new GestorFiltros();
+
+        // Definimos una condición reutilizable:
+        // comprueba si el remitente pertenece a UCP
+        const esUCP = (correo: ICorreo): boolean =>
+            correo.getRemitente().getEmail().endsWith('@ucp.edu.ar');
+
+        // Creamos un filtro que utiliza directamente la condicion
+        const filtroUCP = new FiltroCorreo(
+            'Correos UCP',
+            esUCP
+        );
+
+        // Creamos otro filtro que reutiliza la misma condicion
+        // y agrega una segunda condición sobre el asunto
+        const filtroExamen = new FiltroCorreo(
+            'Examen UCP',
+            correo =>
+                esUCP(correo) &&
+                correo.getAsunto().toLowerCase().includes('examen')
+        );
+
+        // Registramos ambos filtros
+        gestor.agregarFiltro(filtroUCP);
+        gestor.agregarFiltro(filtroExamen);
+
+        // Creamos un correo que cumple ambas condiciones
+        const correo = crearCorreo(
+            'Examen de Física',
+            'Contenido',
+            'ana@ucp.edu.ar'
+        );
+
+        // Aplicamos el segundo filtro
+        const resultado = gestor.aplicarFiltro('Examen UCP', [correo]);
+
+        // Comprobamos que el correo sea devuelto
+        expect(resultado).toEqual([correo]);
+    });
+
+
 
 
 });
