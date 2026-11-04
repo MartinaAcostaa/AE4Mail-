@@ -90,4 +90,17 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         expect(() => gestor.agregarFiltro(filtro2))
             .toThrow('Ya existe un filtro con ese nombre');
     });
+
+     // TEST 4: No permitir registrar un filtro inexistente
+    it('Rf5: Debe rechazar un filtro nulo', () => {
+
+        // Creamos un gestor nuevo
+        const gestor = new GestorFiltros();
+
+        // Intentamos registrar null en lugar de un filtro y esperamos que arroje error
+        expect(() => gestor.agregarFiltro(null as unknown as FiltroCorreo))
+            .toThrow('El filtro es obligatorio.');
+    });
+
+
 });
