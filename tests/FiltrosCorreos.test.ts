@@ -319,6 +319,17 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         expect(resultado).toEqual([correo1]);
     });
 
+    // TEST 11: Intentar aplicar un filtro que no existe
+    it('Rf5: Debe generar un error si se aplica un filtro inexistente', () => {
+
+        // Creamos un gestor nuevo sin filtros registrados
+        const gestor = new GestorFiltros();
+
+        // Intentamos aplicar un filtro que no existe
+        expect(() => gestor.aplicarFiltro('Inexistente', []))
+            .toThrow('No existe ese filtro.');
+    });
+
 
 
 });
