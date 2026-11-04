@@ -103,4 +103,39 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
     });
 
 
+    // TEST 5: Combinar condiciones mediante AND
+    it('Rf 5: Debe combinar condiciones utilizando AND', () => {
+
+        // Creamos un gestor nuevo
+        const gestor = new GestorFiltros();
+
+        // El correo debe cumplir las dos condiciones
+        // 1 El remitente debe pertenecer a UCP
+        // 2 El asunto debe contener la palabra "Examen"
+        const filtro = new FiltroCorreo(
+            'Examen UCP',
+            correo =>
+                correo.getRemitente().getEmail().endsWith('@ucp.edu.ar') &&
+                correo.getAsunto().toLowerCase().includes('examen')
+        );
+
+        // Registramos el filtro
+        gestor.agregarFiltro(filtro);
+
+        // Creamos correos con distintas combinaciones de condiciones
+        const correo1 = crearCorreo('Examen de Física', 'Contenido', 'ana@ucp.edu.ar');
+        const correo2 = crearCorreo('Examen de Física', 'Contenido', 'juan@gmail.com');
+        const correo3 = crearCorreo('Reunión', 'Contenido', 'maria@ucp.edu.ar');
+
+        // Aplicamos el filtro
+        const resultado = gestor.aplicarFiltro(
+            'Examen UCP',
+            [correo1, correo2, correo3]
+        );
+
+        // Solamente el primer correo cumple ambas condiciones asi que esperamos que devuelva el primer correo
+        expect(resultado).toEqual([correo1]);
+    });
+
+
 });
