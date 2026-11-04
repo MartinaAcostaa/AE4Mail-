@@ -330,6 +330,25 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
             .toThrow('No existe ese filtro.');
     });
 
+    // TEST 12: Comprobar que cada gestor tenga sus propios filtros.
+    it('Rf5: Cada instancia debe mantener sus propios filtros', () => {
+
+        // Creamos dos gestores independientes
+        const gestor1 = new GestorFiltros();
+        const gestor2 = new GestorFiltros();
+
+        const filtro = new FiltroCorreo('Examen', () => true); // Creamos un filtro
+
+        // Registramos el filtro solamente en el primer gestor
+        gestor1.agregarFiltro(filtro);
+
+        // Comprobamos que el primer gestor tenga un filtro
+        expect(gestor1.getFiltros()).toHaveLength(1);
+
+        // Comprobamos que el segundo gestor no tenga filtros
+        expect(gestor2.getFiltros()).toHaveLength(0);
+    });
+
 
 
 });
