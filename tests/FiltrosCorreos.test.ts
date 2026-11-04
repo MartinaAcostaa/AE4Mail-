@@ -5,6 +5,7 @@ import { Correo } from '../src/Correo';
 
 import { GestorFiltros } from '../src/GestorFiltros';
 import { FiltroCorreo } from '../src/FiltroCorreo';
+import { ICorreo } from '../src/ICorreo';
 
 // Funcion que crea un correo para utilizar en las pruebas
 function crearCorreo( // llama al metodo para crear un correo y le pasa asunto, contenido y el email del remitente
@@ -49,5 +50,26 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
 
         // Comprobamos que solamente se haya devuelto el correo que cumple
         expect(resultado).toEqual([correo1]);
+    });
+
+    // TEST 2: No permitir más de cinco filtros
+    it('RF5: No debe permitir registrar más de cinco filtros', () => {
+
+        // Creamos un gestor nuevo.
+        const gestor = new GestorFiltros();
+
+        // Registramos cinco filtros diferentes
+        for (let i = 1; i <= 5; i++) {
+            gestor.agregarFiltro(
+                new FiltroCorreo(`Filtro ${i}`, correo => true)
+            );
+        }
+
+        // Intentamos registrar un sexto filtro
+        const sextoFiltro = new FiltroCorreo('Filtro 6', correo => true);
+
+        // Comprobamos que se produzca un error
+        expect(() => gestor.agregarFiltro(sextoFiltro))
+            .toThrow('No se pueden agregar más de cinco filtros.');
     });
 });
