@@ -137,5 +137,36 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         expect(resultado).toEqual([correo1]);
     });
 
+    // TEST 6: Combinar condiciones mediante OR
+    it('Rf5: Debe combinar condiciones utilizando OR', () => {
+
+        const gestor = new GestorFiltros();// Creamos un gestor nuevo
+
+        // El asunto debe contener "Proyecto" o "Reunion"
+        // Con que se cumpla una de las dos condiciones es suficiente
+        const filtro = new FiltroCorreo(
+            'Seguimiento',
+            correo =>
+                correo.getAsunto().toLowerCase().includes('proyecto') ||
+                correo.getAsunto().toLowerCase().includes('reunión')
+        );
+
+        gestor.agregarFiltro(filtro); // Registramos el filtro
+
+        // Creamos tres correos con diferentes asuntos
+        const correo1 = crearCorreo('Proyecto AE4', 'Contenido', 'ana@mail.com');
+        const correo2 = crearCorreo('Reunión de equipo', 'Contenido', 'juan@mail.com');
+        const correo3 = crearCorreo('Examen', 'Contenido', 'maria@mail.com');
+
+        const resultado = gestor.aplicarFiltro( // Aplicamos el filtro
+            'Seguimiento',
+            [correo1, correo2, correo3]
+        );
+
+        // Los dos primeros cumplen al menos una condicion
+        expect(resultado).toEqual([correo1, correo2]);
+    });
+
+
 
 });
