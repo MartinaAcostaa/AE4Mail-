@@ -167,6 +167,47 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         expect(resultado).toEqual([correo1, correo2]);
     });
 
+    // TEST 7: Combinar condiciones mediante NOT y AND.
+    it('Rf 5: Debe utilizar NOT para excluir correos leídos', () => {
+
+        // Creamos un gestor nuevo
+        const gestor = new GestorFiltros();
+
+        // La condición exige que
+        // 1 El correo NO esté leido
+        // 2 Su contenido incluya la palabra "Entrega"
+        const filtro = new FiltroCorreo(
+            'Entregas pendientes',
+            correo =>
+                !correo.getLeido() &&
+                correo.getContenido().toLowerCase().includes('entrega')
+        );
+
+        gestor.agregarFiltro(filtro);  // Registramos el filtro
+
+         // Creamos dos correos
+        const correo1 = crearCorreo(        
+            'Actividad',
+            'Entrega del trabajo práctico',
+            'ana@mail.com'
+        );
+
+        const correo2 = crearCorreo(
+            'Consulta',
+            'Tengo una duda sobre la materia',
+            'juan@mail.com'
+        );
+
+        // Aplicamos el filtro
+        const resultado = gestor.aplicarFiltro(
+            'Entregas pendientes',
+            [correo1, correo2]
+        );
+
+        // Solamente el primero contiene "Entrega" y no esta leido
+        expect(resultado).toEqual([correo1]); // se espera que se devuelva el primero
+    });
+
 
 
 });
