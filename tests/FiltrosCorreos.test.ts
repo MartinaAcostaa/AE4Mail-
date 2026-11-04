@@ -61,15 +61,33 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         // Registramos cinco filtros diferentes
         for (let i = 1; i <= 5; i++) {
             gestor.agregarFiltro(
-                new FiltroCorreo(`Filtro ${i}`, correo => true)
+                new FiltroCorreo(`Filtro ${i}`, () => true)
             );
         }
 
         // Intentamos registrar un sexto filtro
-        const sextoFiltro = new FiltroCorreo('Filtro 6', correo => true);
+        const sextoFiltro = new FiltroCorreo('Filtro 6', () => true);
 
         // Comprobamos que se produzca un error
         expect(() => gestor.agregarFiltro(sextoFiltro))
             .toThrow('No se pueden agregar más de cinco filtros.');
+    });
+
+     // TEST 3: No permitir filtros con nombres repetidos
+    it('Rf5: No debe permitir registrar dos filtros con el mismo nombre', () => {
+
+        // Creamos un gestor nuevo
+        const gestor = new GestorFiltros();
+
+        // Registramos el primer filtro
+        const filtro1 = new FiltroCorreo('Examen', () => true);
+        gestor.agregarFiltro(filtro1);
+
+        // Creamos otro filtro con el mismo nombre
+        const filtro2 = new FiltroCorreo('Examen', () => false);
+
+        // Comprobamos que no se permita registrarlo
+        expect(() => gestor.agregarFiltro(filtro2))
+            .toThrow('Ya existe un filtro con ese nombre');
     });
 });
