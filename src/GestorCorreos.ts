@@ -1,10 +1,12 @@
 import { ICorreo } from './ICorreo';
 
+
 // Administra los correos enviados
 export class GestorCorreos {
 
     private readonly _enviados: ICorreo[] = [];
     private readonly _entrada: ICorreo[] = []; //Bandeja de Entrada: correos que llegan
+
 
     public enviarCorreo(correo: ICorreo): void {
 
@@ -102,5 +104,7 @@ export class GestorCorreos {
                coincideRemitente ||
                coincideDestinatario;
     });
-}
+   }
+
+   
 }

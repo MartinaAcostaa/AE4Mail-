@@ -8,6 +8,7 @@ export interface ICorreo {
     getRemitente(): IContacto;
     getDestinatarios(): IContacto[];
     getLeido(): boolean;
+    getFavorito(): boolean;
 
 
 }
