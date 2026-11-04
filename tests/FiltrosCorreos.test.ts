@@ -1,6 +1,10 @@
+import { describe, it, expect } from 'vitest';
 
 import { Contacto } from '../src/Contacto';
 import { Correo } from '../src/Correo';
+
+import { GestorFiltros } from '../src/GestorFiltros';
+import { FiltroCorreo } from '../src/FiltroCorreo';
 
 // Funcion que crea un correo para utilizar en las pruebas
 function crearCorreo( // llama al metodo para crear un correo y le pasa asunto, contenido y el email del remitente
@@ -18,3 +22,32 @@ function crearCorreo( // llama al metodo para crear un correo y le pasa asunto, 
         [destinatario]
     );
 }
+
+describe('RF5: Creación y aplicación de filtros personalizados', () => {
+
+    // TEST 1: Registrar un filtro y aplicarlo.
+    it('Rf5: Debe registrar un filtro y aplicarlo correctamente', () => {
+
+        // Creamos un gestor de filtros nuevo
+        const gestor = new GestorFiltros();
+
+        // Creamos un filtro que busca correos que como asunto contenga "Examen"
+        const filtro = new FiltroCorreo(
+            'Examen',
+            correo => correo.getAsunto().toLowerCase().includes('examen')
+        );
+
+        // Registramos el filtro en el gestor
+        gestor.agregarFiltro(filtro);
+
+        // Creamos dos correos: uno cumple la condición y otro no
+        const correo1 = crearCorreo('Examen de Física', 'Contenido', 'ana@mail.com');
+        const correo2 = crearCorreo('Reunión', 'Contenido', 'juan@mail.com');
+
+        // Aplicamos el filtro sobre ambos correos
+        const resultado = gestor.aplicarFiltro('Examen', [correo1, correo2]);
+
+        // Comprobamos que solamente se haya devuelto el correo que cumple
+        expect(resultado).toEqual([correo1]);
+    });
+});
