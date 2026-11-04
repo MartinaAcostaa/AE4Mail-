@@ -252,6 +252,40 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         expect(resultado).toEqual([correo]);
     });
 
+    // TEST 9: Aplicar un mismo filtro sobre distintas colecciones
+    it('Rf 5: Debe permitir aplicar el mismo filtro a diferentes colecciones', () => {
+
+        const gestor = new GestorFiltros(); // Creamos un gestor nuevo
+
+        // Creamos un filtro que busca correos de remitentes UCP
+        const filtro = new FiltroCorreo(
+            'Correos UCP',
+            correo => correo.getRemitente().getEmail().endsWith('@ucp.edu.ar')
+        );
+
+        gestor.agregarFiltro(filtro); // Registramos el filtro una sola vez
+
+        // Creamos correos para dos colecciones diferentes
+        const correoEntrada = crearCorreo('Consulta', 'Contenido', 'ana@ucp.edu.ar');
+        const correoEnviado = crearCorreo('Trabajo', 'Contenido', 'juan@gmail.com');
+
+        // Aplicamos el mismo filtro sobre la primera coleccion
+        const resultadoEntrada = gestor.aplicarFiltro(
+            'Correos UCP',
+            [correoEntrada]
+        );
+
+        // Aplicamos el mismo filtro sobre la segunda coleccion
+        const resultadoEnviados = gestor.aplicarFiltro(
+            'Correos UCP',
+            [correoEnviado]
+        );
+
+        // Comprobamos los resultados de cada aplicacion
+        expect(resultadoEntrada).toEqual([correoEntrada]);
+        expect(resultadoEnviados).toEqual([]);
+    });
+
 
 
 
