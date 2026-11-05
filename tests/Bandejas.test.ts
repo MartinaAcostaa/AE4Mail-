@@ -254,4 +254,27 @@ it('getCorreos de Borradores devuelve una copia', () => {
     expect(borradores.getCorreos()).toHaveLength(1);
 });
 
+it('restaura un correo eliminado desde Borradores', () => {
+    const borradores = new BandejaBorradores();
+    const eliminados = new BandejaEliminados();
+    const ana = new Contacto('Ana', 'ana@mail.com');
+
+    const correo: ICorreo = {
+        id: 3001,
+        getAsunto: () => '',
+        getContenido: () => 'Borrador pendiente',
+        getRemitente: () => ana,
+        getDestinatarios: () => [],
+        getLeido: () => false,
+        getFavorito: () => false
+    };
+
+    borradores.agregarCorreo(correo);
+    eliminados.eliminarDesde(correo, borradores);
+    eliminados.restaurarCorreo(correo);
+
+    expect(borradores.getCorreos()).toEqual([correo]);
+    expect(eliminados.getCorreos()).toHaveLength(0);
+});
+
 });
