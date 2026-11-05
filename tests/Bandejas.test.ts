@@ -3,6 +3,7 @@ import { BandejaEntrada } from '../src/BandejaEntrada';
 import { Correo } from '../src/Correo';
 import { Contacto } from '../src/Contacto';
 import { BandejaEnviados } from '../src/BandejaEnviados';
+import { BandejaBorradores } from '../src/BandejaBorradores';
 import { ICorreo } from '../src/ICorreo';
 
 describe('RF-06: Bandejas', () => {
@@ -109,6 +110,27 @@ describe('RF-06: Bandejas', () => {
         expect(() => enviados.agregarCorreo(correoSinAsunto)).toThrow();
         expect(() => enviados.agregarCorreo(correoSinDestinatarios)).toThrow();
         expect(enviados.getCorreos()).toEqual([correoCompleto]);
+    });
+
+    it ("La Bandeja de Borradores acepta correos incompletos" , () => {
+        // bandeja de borradores y un correo que le falta el asunto
+        const borradores = new BandejaBorradores()
+        const ana = new Contacto('Ana', 'ana@mail.com')
+        const sinAsunto: ICorreo = {
+        id: 2001,
+        getAsunto: () => '',
+        getContenido: () => 'Todavia lo estoy escribiendo',
+        getRemitente: () => ana,
+        getDestinatarios: () => [],
+        getLeido: () => false,
+        getFavorito: () => false,
+    };
+
+    // lo guardamos como borrador 
+    borradores.agregarCorreo(sinAsunto);
+
+    // y comprobamos que esta en la bandeja
+    expect(borradores.getCorreos()).toEqual([sinAsunto]);
     });
 });
 
