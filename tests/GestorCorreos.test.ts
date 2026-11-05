@@ -5,6 +5,9 @@ import { Correo } from '../src/Correo';
 import { Contacto } from '../src/Contacto';
 import { ICorreo } from '../src/ICorreo';
 
+import { Buscador } from '../src/Buscador';
+
+
 describe('GestorCorreos', () => {
 
     it('RF2: Debe enviar un correo a un destinatario', () => {
@@ -229,17 +232,19 @@ describe('GestorCorreos', () => {
 
 
 describe('Integración de bandejas en GestorCorreos', () => {
-    it('recibe un correo en Entrada y buscarEnEntrada consulta esa bandeja', () => {
-        const gestor = new GestorCorreos();
-        const ana = new Contacto('Ana', 'ana@mail.com');
-        const luis = new Contacto('Luis', 'luis@mail.com');
-        const correo = new Correo('Reunión de equipo', 'Hablamos mañana', ana, [luis]);
+    it('recibe un correo en Entrada y permite buscar en esa bandeja', () => {
+    const gestor = new GestorCorreos();
+    const buscador = new Buscador();
 
-        gestor.recibirCorreo(correo);
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const correo = new Correo('Reunión de equipo', 'Hablamos mañana', ana, [luis]);
 
-        expect(gestor.getEntrada()).toEqual([correo]);
-        expect(gestor.buscarEnEntrada('reunión')).toEqual([correo]);
-    });
+    gestor.recibirCorreo(correo);
+
+    expect(gestor.getEntrada()).toEqual([correo]);
+    expect(buscador.buscarCorreos(gestor.getEntrada(), 'reunión')).toEqual([correo]);
+});
 
     it('guarda el envío en Enviados y rechaza enviarlo otra vez', () => {
         const gestor = new GestorCorreos();
