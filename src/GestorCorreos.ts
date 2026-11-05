@@ -2,6 +2,7 @@
 import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaBorradores } from './BandejaBorradores';
+import { BandejaEliminados } from './BandejaEliminados';
 
 
 // Administra los correos enviados
@@ -10,6 +11,7 @@ export class GestorCorreos {
     private readonly _enviados = new BandejaEnviados();
     private readonly _entrada = new BandejaEntrada(); //Bandeja de Entrada: correos que llegan
     private readonly _borradores = new BandejaBorradores();
+    private readonly _eliminados = new BandejaEliminados();
 
 
     public enviarCorreo(correo: ICorreo): void {
@@ -38,7 +40,7 @@ export class GestorCorreos {
             destinatarios.some(destinatario => destinatario == null) //recorre los elementos del arreglo  comprueba si al menos uno es null o undefined
             //si al menos uno cumple la conducion devuelve true
         ) {
-            throw new Error('Debe existir al menos un destinatario vÃ¡lido.'); //si la condicion se cumple (devuelve true) se genera el error
+            throw new Error('Debe existir al menos un destinatario válido.'); //si la condicion se cumple (devuelve true) se genera el error
         }
 
         // Verificamos que el correo no haya sido enviado anteriormente
@@ -68,6 +70,33 @@ export class GestorCorreos {
 
     public getBorradores(): ICorreo[] {
         return this._borradores.getCorreos();
+    }
+
+    public getEliminados(): ICorreo[] {
+        return this._eliminados.getCorreos();
+    }
+
+    public eliminarCorreo(correo: ICorreo): void {
+        if (this._entrada.contieneCorreo(correo)) {
+            this._eliminados.eliminarDesde(correo, this._entrada);
+            return;
+        }
+
+        if (this._enviados.contieneCorreo(correo)) {
+            this._eliminados.eliminarDesde(correo, this._enviados);
+            return;
+        }
+
+        if (this._borradores.contieneCorreo(correo)) {
+            this._eliminados.eliminarDesde(correo, this._borradores);
+            return;
+        }
+
+        throw new Error('El correo no pertenece a ninguna bandeja activa.');
+    }
+
+    public restaurarCorreo(correo: ICorreo): void {
+        this._eliminados.restaurarCorreo(correo);
     }
 
     
@@ -125,4 +154,5 @@ export class GestorCorreos {
 
    
 }
+
 
