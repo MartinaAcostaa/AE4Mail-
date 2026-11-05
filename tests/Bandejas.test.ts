@@ -232,4 +232,26 @@ it('no permite modificar la bandeja Eliminados mediante getCorreos', () => {
     expect(eliminados.getCorreos()).toHaveLength(1);
 });
 
+it('getCorreos de Borradores devuelve una copia', () => {
+    const borradores = new BandejaBorradores();
+    const ana = new Contacto('Ana', 'ana@mail.com');
+
+    const correo: ICorreo = {
+        id: 2002,
+        getAsunto: () => '',
+        getContenido: () => 'Borrador',
+        getRemitente: () => ana,
+        getDestinatarios: () => [],
+        getLeido: () => false,
+        getFavorito: () => false
+    };
+
+    borradores.agregarCorreo(correo);
+
+    const copia = borradores.getCorreos();
+    copia.pop();
+
+    expect(borradores.getCorreos()).toHaveLength(1);
+});
+
 });
