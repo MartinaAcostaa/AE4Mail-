@@ -150,5 +150,38 @@ describe('RF-06: Bandejas', () => {
         expect(entrada.contieneCorreo(correo)).toBe(false);
         expect(eliminados.getCorreos()).toEqual([correo]);
     });
+
+    it ("restaura un correo de Eliminados a su bandeja original" , () => {
+    // un correo de la Entrada y otro de Enviados, los dos eliminados
+    const entrada = new BandejaEntrada();
+    const enviados = new BandejaEnviados();
+    const eliminados = new BandejaEliminados();
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const recibido = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
+    const enviado = new Correo('Proyecto', 'Te paso el informe', luis, [ana]);
+    entrada.agregarCorreo(recibido);
+    enviados.agregarCorreo(enviado);
+    eliminados.eliminarDesde(recibido, entrada);
+    eliminados.eliminarDesde(enviado, enviados);
+
+    // restauramos los dos 
+    eliminados.restaurarCorreo(recibido);
+    eliminados.restaurarCorreo(enviado);
+
+    // comprobamos que ya no estan en Eliminados y si en sus bandejas originales
+    expect(entrada.getCorreos()).toEqual([recibido]);
+    expect(enviados.getCorreos()).toEqual([enviado]);
+    expect(eliminados.getCorreos()).toEqual([]);
+    });
+
+    it('no permite restaurar un correo que no esta en Eliminados', () => {
+    const eliminados = new BandejaEliminados();
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const correo = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
+
+    expect(() => eliminados.restaurarCorreo(correo)).toThrow();
+    });
 });
 
