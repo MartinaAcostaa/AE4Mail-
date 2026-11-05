@@ -9,9 +9,26 @@ export class BandejaEnviados extends Bandeja {
             throw new Error('Para enviar, el correo debe tener asunto.');
         }
 
-        if (correo.getDestinatarios().length === 0) { //tiene que tener al menos un destinatario
-            throw new Error('Para enviar, el correo debe tener al menos un destinatario.');
-        }
+    // Validar contenido
+    if (!correo.getContenido() || correo.getContenido().trim().length === 0) {
+        throw new Error('Para enviar, el correo debe tener contenido.');
     }
+
+    // Validar remitente
+    if (!correo.getRemitente()) {
+        throw new Error('Para enviar, el correo debe tener remitente.');
+    }
+
+    // Validar destinatarios
+    const destinatarios = correo.getDestinatarios();
+
+    if (
+        !destinatarios ||
+        destinatarios.length === 0 ||
+        destinatarios.some(destinatario => destinatario == null)
+    ) {
+        throw new Error('Para enviar, el correo debe tener al menos un destinatario válido.');
+    }
+}
 }
     

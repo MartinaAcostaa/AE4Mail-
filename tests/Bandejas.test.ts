@@ -294,6 +294,25 @@ it('restaura un correo eliminado desde Borradores', () => {
     expect(eliminados.getCorreos()).toHaveLength(0);
 });
 
+
+it('no permite agregar a Enviados un correo sin contenido', () => {
+    const enviados = new BandejaEnviados();
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    const correoSinContenido: ICorreo = {
+        id: 1003,
+        getAsunto: () => 'Reunion',
+        getContenido: () => '',
+        getRemitente: () => ana,
+        getDestinatarios: () => [luis],
+        getLeido: () => false,
+        getFavorito: () => false
+    };
+
+    expect(() => enviados.agregarCorreo(correoSinContenido)).toThrow();
+    expect(enviados.getCorreos()).toHaveLength(0);
+});
  
 
 });
