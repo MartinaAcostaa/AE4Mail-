@@ -349,6 +349,46 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         expect(gestor2.getFiltros()).toHaveLength(0);
     });
 
+    it('Debe devolver un arreglo nuevo aunque todos los correos cumplan', () => {
+    const gestor = new GestorFiltros();
+
+    gestor.agregarFiltro(new FiltroCorreo('Todos', () => true));
+
+    const correos = [
+        crearCorreo('Examen', 'Contenido', 'ana@mail.com'),
+        crearCorreo('Proyecto', 'Contenido', 'juan@mail.com')
+    ];
+
+    const resultado = gestor.aplicarFiltro('Todos', correos);
+
+    expect(resultado).toEqual(correos);
+    expect(resultado).not.toBe(correos);
+});
+
+it('No debe permitir modificar la colección interna mediante getFiltros', () => {
+    const gestor = new GestorFiltros();
+
+    gestor.agregarFiltro(new FiltroCorreo('Examen', () => true));
+
+    const filtros = gestor.getFiltros();
+
+    filtros.pop();
+
+    expect(gestor.getFiltros()).toHaveLength(1);
+});
+
+it('No debe permitir nombres repetidos ignorando mayúsculas', () => {
+    const gestor = new GestorFiltros();
+
+    gestor.agregarFiltro(new FiltroCorreo('Examen', () => true));
+
+    const filtro = new FiltroCorreo('EXAMEN', () => false);
+
+    expect(() => gestor.agregarFiltro(filtro)).toThrow();
+});
+
+
+
 
 
 });
