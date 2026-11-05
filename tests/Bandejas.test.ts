@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { BandejaEntrada } from '../src/BandejaEntrada';
 import { Correo } from '../src/Correo';
 import { Contacto } from '../src/Contacto';
+import { BandejaEnviados } from '../src/BandejaEnviados';
+import { ICorreo } from '../src/ICorreo';
 
 describe('RF-06: Bandejas', () => {
     it("agrega un correo a la bandeja de entrada y lo consulta", () => {
@@ -71,4 +73,42 @@ describe('RF-06: Bandejas', () => {
         // y la bandeja sigue teniendo solo el correo guardado
         expect(entrada.getCorreos()).toEqual([guardado]);
     });
+
+    it ("la Bandeja de Enviados acepta correos completos y rechaza los incompletos" , () => {
+        //bandeja de enviados y un correo completo 
+        const enviados = new BandejaEnviados()
+        const ana = new Contacto('Ana', 'ana@mail.com')
+        const luis = new Contacto('Luis', 'luis@mail.com')
+        const correoCompleto = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
+
+        //como correo no deja crear correos incompletos, armamos objetos de pruebas
+        // que cumplen la interfaz ICorreo pero les falta el asunto o el destinatario
+        const correoSinAsunto: ICorreo = {
+            id: 1001,
+            getAsunto: () => '',
+            getContenido: () => 'Hola',
+            getRemitente: () => ana,
+            getDestinatarios: () => [luis],
+            getLeido: () => false,
+            getFavorito: () => false
+        };
+
+        const correoSinDestinatarios: ICorreo = {
+            id: 1002,
+            getAsunto: () => 'Reunion',
+            getContenido: () => 'Hola',
+            getRemitente: () => ana,
+            getDestinatarios: () => [],
+            getLeido: () => false,
+            getFavorito: () => false
+        };
+
+        // el completo se agrega , los incompletos lanzan error
+        enviados.agregarCorreo(correoCompleto);
+        expect(enviados.getCorreos()).toEqual([correoCompleto]);
+        expect(() => enviados.agregarCorreo(correoSinAsunto)).toThrow();
+        expect(() => enviados.agregarCorreo(correoSinDestinatarios)).toThrow();
+        expect(enviados.getCorreos()).toEqual([correoCompleto]);
+    });
 });
+
