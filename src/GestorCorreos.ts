@@ -1,11 +1,13 @@
-import { ICorreo } from './ICorreo';
+﻿import { ICorreo } from './ICorreo';
+import { BandejaEntrada } from './BandejaEntrada';
+import { BandejaEnviados } from './BandejaEnviados';
 
 
 // Administra los correos enviados
 export class GestorCorreos {
 
-    private readonly _enviados: ICorreo[] = [];
-    private readonly _entrada: ICorreo[] = []; //Bandeja de Entrada: correos que llegan
+    private readonly _enviados = new BandejaEnviados();
+    private readonly _entrada = new BandejaEntrada(); //Bandeja de Entrada: correos que llegan
 
 
     public enviarCorreo(correo: ICorreo): void {
@@ -34,43 +36,43 @@ export class GestorCorreos {
             destinatarios.some(destinatario => destinatario == null) //recorre los elementos del arreglo  comprueba si al menos uno es null o undefined
             //si al menos uno cumple la conducion devuelve true
         ) {
-            throw new Error('Debe existir al menos un destinatario válido.'); //si la condicion se cumple (devuelve true) se genera el error
+            throw new Error('Debe existir al menos un destinatario vÃ¡lido.'); //si la condicion se cumple (devuelve true) se genera el error
         }
 
         // Verificamos que el correo no haya sido enviado anteriormente
-        const yaEnviado = this._enviados.some(enviado => enviado.id === correo.id);
+        const yaEnviado = this._enviados.contieneCorreo(correo);
 
         if (yaEnviado) { // Si ya fue enviado lanza error
             throw new Error('Este correo ya fue enviado.');}
 
          // Registramos el correo en la Bandeja de Enviados
-        this._enviados.push(correo);
+        this._enviados.agregarCorreo(correo);
 
 
     }
 
     public getEnviados(): ICorreo[] {
-        return [...this._enviados];
+        return this._enviados.getCorreos();
     }
 
     
     public recibirCorreo(correo: ICorreo): void { //simula que llega un correo (no hay servidor real)
-        this._entrada.push(correo); //lo guarda en la Bandeja de Entrada
+        this._entrada.agregarCorreo(correo); //lo guarda en la Bandeja de Entrada
     }
 
     public getEntrada(): ICorreo[] { //devuelve una copia para que no se modifique la bandeja desde afuera
-        return [...this._entrada];
+        return this._entrada.getCorreos();
     }
 
     public buscarEnEntrada(texto: string): ICorreo[] { //busca solo en la Bandeja de Entrada, como pide RF-04
-        return this.buscarCorreos(this._entrada, texto); //reutiliza la busqueda pasandole la Entrada
+        return this.buscarCorreos(this._entrada.getCorreos(), texto); //reutiliza la busqueda pasandole la Entrada
     }
 
    public buscarCorreos(correos: ICorreo[], texto: string): ICorreo[] {
 
     const busqueda = texto.trim().toLowerCase();
 
-    // Si el texto está vacío o la bandeja no existe o está vacía.
+    // Si el texto estÃ¡ vacÃ­o o la bandeja no existe o estÃ¡ vacÃ­a.
     if (!busqueda || !correos || correos.length === 0) {
         return [];
     }
