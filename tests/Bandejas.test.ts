@@ -314,5 +314,22 @@ it('no permite agregar a Enviados un correo sin contenido', () => {
     expect(enviados.getCorreos()).toHaveLength(0);
 });
  
+it('no permite agregar a Enviados un correo sin remitente', () => {
+    const enviados = new BandejaEnviados();
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    const correoSinRemitente: ICorreo = {
+        id: 1004,
+        getAsunto: () => 'Reunion',
+        getContenido: () => 'Hola',
+        getRemitente: () => null as unknown as Contacto,
+        getDestinatarios: () => [luis],
+        getLeido: () => false,
+        getFavorito: () => false
+    };
+
+    expect(() => enviados.agregarCorreo(correoSinRemitente)).toThrow();
+    expect(enviados.getCorreos()).toHaveLength(0);
+});
 
 });
