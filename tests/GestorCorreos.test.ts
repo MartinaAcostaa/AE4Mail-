@@ -500,3 +500,60 @@ describe('RF4: Búsqueda de correos', () => {
 
 
 });
+describe('Integración de bandejas en GestorCorreos', () => {
+    it('recibe un correo en Entrada y buscarEnEntrada consulta esa bandeja', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+        const correo = new Correo('Reunión de equipo', 'Hablamos mañana', ana, [luis]);
+
+        gestor.recibirCorreo(correo);
+
+        expect(gestor.getEntrada()).toEqual([correo]);
+        expect(gestor.buscarEnEntrada('reunión')).toEqual([correo]);
+    });
+
+    it('guarda el envío en Enviados y rechaza enviarlo otra vez', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+        const correo = new Correo('Aviso', 'Contenido', ana, [luis]);
+
+        gestor.enviarCorreo(correo);
+
+        expect(gestor.getEnviados()).toEqual([correo]);
+        expect(() => gestor.enviarCorreo(correo)).toThrow('Este correo ya fue enviado.');
+        expect(gestor.getEnviados()).toEqual([correo]);
+    });
+
+    it('quita de Borradores un correo que se envía', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+        const correo = new Correo('Borrador', 'Contenido', ana, [luis]);
+
+        gestor.guardarBorrador(correo);
+        gestor.enviarCorreo(correo);
+
+        expect(gestor.getBorradores()).toEqual([]);
+        expect(gestor.getEnviados()).toEqual([correo]);
+    });
+
+    it('mueve un correo a Eliminados y lo restaura a su bandeja de origen', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+        const correo = new Correo('Recibido', 'Contenido', ana, [luis]);
+
+        gestor.recibirCorreo(correo);
+        gestor.eliminarCorreo(correo);
+
+        expect(gestor.getEntrada()).toEqual([]);
+        expect(gestor.getEliminados()).toEqual([correo]);
+
+        gestor.restaurarCorreo(correo);
+
+        expect(gestor.getEliminados()).toEqual([]);
+        expect(gestor.getEntrada()).toEqual([correo]);
+    });
+});

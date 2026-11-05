@@ -2,7 +2,6 @@
 import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaBorradores } from './BandejaBorradores';
-import { BandejaEliminados } from './BandejaEliminados';
 
 
 // Administra los correos enviados
@@ -11,7 +10,6 @@ export class GestorCorreos {
     private readonly _enviados = new BandejaEnviados();
     private readonly _entrada = new BandejaEntrada(); //Bandeja de Entrada: correos que llegan
     private readonly _borradores = new BandejaBorradores();
-    private readonly _eliminados = new BandejaEliminados();
 
 
     public enviarCorreo(correo: ICorreo): void {
@@ -72,33 +70,6 @@ export class GestorCorreos {
         return this._borradores.getCorreos();
     }
 
-    public getEliminados(): ICorreo[] {
-        return this._eliminados.getCorreos();
-    }
-
-    public eliminarCorreo(correo: ICorreo): void {
-        if (this._entrada.contieneCorreo(correo)) {
-            this._eliminados.eliminarDesde(correo, this._entrada);
-            return;
-        }
-
-        if (this._enviados.contieneCorreo(correo)) {
-            this._eliminados.eliminarDesde(correo, this._enviados);
-            return;
-        }
-
-        if (this._borradores.contieneCorreo(correo)) {
-            this._eliminados.eliminarDesde(correo, this._borradores);
-            return;
-        }
-
-        throw new Error('El correo no pertenece a Entrada, Enviados ni Borradores.');
-    }
-
-    public restaurarCorreo(correo: ICorreo): void {
-        this._eliminados.restaurarCorreo(correo);
-    }
-
     
     public recibirCorreo(correo: ICorreo): void { //simula que llega un correo (no hay servidor real)
         this._entrada.agregarCorreo(correo); //lo guarda en la Bandeja de Entrada
@@ -116,7 +87,7 @@ export class GestorCorreos {
 
     const busqueda = texto.trim().toLowerCase();
 
-    // Si el texto estÃ¡ vacÃ­o o la bandeja no existe o estÃ¡ vacÃ­a.
+    
     if (!busqueda || !correos || correos.length === 0) {
         return [];
     }
@@ -154,5 +125,4 @@ export class GestorCorreos {
 
    
 }
-
 
