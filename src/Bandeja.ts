@@ -7,8 +7,13 @@ export abstract class Bandeja {
         if (this.contieneCorreo(correo)) { //si ya existe el correo en la bandeja lanza error
             throw new Error('El correo ya existe en la bandeja.'); //no lo agrega para no duplicarlo
         }
+        this.validarIngreso(correo); //cada bandeja hija revisa sus propias reglas
         this._correos.push(correo);
     }
+
+    // metodo abstracto, Bandeja lo declara pero no lo escribe
+    // cada clase hija esta obligada a escribirlo con sus propias reglas (polimorfismo)
+    protected abstract validarIngreso(correo: ICorreo): void;
 
     public quitarCorreo(correo: ICorreo): void { //saca un correo de la bandeja
         const posicion = this._correos.findIndex(guardado => guardado.id === correo.id); //busca en que posicion esta
