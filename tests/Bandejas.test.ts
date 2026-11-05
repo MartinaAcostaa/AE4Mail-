@@ -254,6 +254,23 @@ it('getCorreos de Borradores devuelve una copia', () => {
     expect(borradores.getCorreos()).toHaveLength(1);
 });
 
+it('getCorreos de Eliminados devuelve una copia', () => {
+    const entrada = new BandejaEntrada();
+    const eliminados = new BandejaEliminados();
+
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const correo = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
+
+    entrada.agregarCorreo(correo);
+    eliminados.eliminarDesde(correo, entrada);
+
+    const copia = eliminados.getCorreos();
+    copia.pop();
+
+    expect(eliminados.getCorreos()).toHaveLength(1);
+});
+
 it('restaura un correo eliminado desde Borradores', () => {
     const borradores = new BandejaBorradores();
     const eliminados = new BandejaEliminados();
@@ -276,5 +293,7 @@ it('restaura un correo eliminado desde Borradores', () => {
     expect(borradores.getCorreos()).toEqual([correo]);
     expect(eliminados.getCorreos()).toHaveLength(0);
 });
+
+ 
 
 });
