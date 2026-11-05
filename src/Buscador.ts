@@ -27,6 +27,12 @@ export class Buscador {
                 )
             );
         });
+
+        
+    }
+
+    public buscarEnEntrada(entrada: BandejaEntrada, texto: string): ICorreo[] {
+        return this.buscarCorreos(entrada.getCorreos(), texto);
     }
 
     
