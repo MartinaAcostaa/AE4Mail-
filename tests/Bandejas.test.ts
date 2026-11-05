@@ -4,6 +4,7 @@ import { Correo } from '../src/Correo';
 import { Contacto } from '../src/Contacto';
 import { BandejaEnviados } from '../src/BandejaEnviados';
 import { BandejaBorradores } from '../src/BandejaBorradores';
+import { BandejaEliminados } from '../src/BandejaEliminados';
 import { ICorreo } from '../src/ICorreo';
 
 describe('RF-06: Bandejas', () => {
@@ -131,6 +132,23 @@ describe('RF-06: Bandejas', () => {
 
     // y comprobamos que esta en la bandeja
     expect(borradores.getCorreos()).toEqual([sinAsunto]);
+    });
+
+    it ("Elimina un correo de su bandeja y lo pasa a Eliminados" , () => {
+        // bandeja de entrada con un correo
+        const entrada = new BandejaEntrada()
+        const eliminados = new BandejaEliminados()
+        const ana = new Contacto('Ana', 'ana@mail.com')
+        const luis = new Contacto('Luis', 'luis@mail.com')
+        const correo = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
+        entrada.agregarCorreo(correo);
+
+        // lo eliminamos indicando de que bandeja sale 
+        eliminados.eliminarDesde(correo, entrada);
+
+        // comprobamos que ya no esta en la bandeja original y si en Eliminados
+        expect(entrada.contieneCorreo(correo)).toBe(false);
+        expect(eliminados.getCorreos()).toEqual([correo]);
     });
 });
 
