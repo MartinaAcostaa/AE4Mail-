@@ -1,6 +1,8 @@
 ﻿import { ICorreo } from './ICorreo';
 import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
+import { BandejaBorradores } from './BandejaBorradores';
+import { BandejaEliminados } from './BandejaEliminados';
 
 
 // Administra los correos enviados
@@ -8,6 +10,8 @@ export class GestorCorreos {
 
     private readonly _enviados = new BandejaEnviados();
     private readonly _entrada = new BandejaEntrada(); //Bandeja de Entrada: correos que llegan
+    private readonly _borradores = new BandejaBorradores();
+    private readonly _eliminados = new BandejaEliminados();
 
 
     public enviarCorreo(correo: ICorreo): void {
@@ -48,11 +52,51 @@ export class GestorCorreos {
          // Registramos el correo en la Bandeja de Enviados
         this._enviados.agregarCorreo(correo);
 
+        // Si estaba guardado como borrador, lo quitamos al enviarlo.
+        if (this._borradores.contieneCorreo(correo)) {
+            this._borradores.quitarCorreo(correo);
+        }
+
 
     }
 
     public getEnviados(): ICorreo[] {
         return this._enviados.getCorreos();
+    }
+
+    public guardarBorrador(correo: ICorreo): void {
+        this._borradores.agregarCorreo(correo);
+    }
+
+    public getBorradores(): ICorreo[] {
+        return this._borradores.getCorreos();
+    }
+
+    public getEliminados(): ICorreo[] {
+        return this._eliminados.getCorreos();
+    }
+
+    public eliminarCorreo(correo: ICorreo): void {
+        if (this._entrada.contieneCorreo(correo)) {
+            this._eliminados.eliminarDesde(correo, this._entrada);
+            return;
+        }
+
+        if (this._enviados.contieneCorreo(correo)) {
+            this._eliminados.eliminarDesde(correo, this._enviados);
+            return;
+        }
+
+        if (this._borradores.contieneCorreo(correo)) {
+            this._eliminados.eliminarDesde(correo, this._borradores);
+            return;
+        }
+
+        throw new Error('El correo no pertenece a Entrada, Enviados ni Borradores.');
+    }
+
+    public restaurarCorreo(correo: ICorreo): void {
+        this._eliminados.restaurarCorreo(correo);
     }
 
     
@@ -110,3 +154,5 @@ export class GestorCorreos {
 
    
 }
+
+
