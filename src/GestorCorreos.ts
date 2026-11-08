@@ -3,6 +3,8 @@ import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaBorradores } from './BandejaBorradores';
 import { BandejaEliminados } from './BandejaEliminados';
+import { Correo } from './Correo';
+import { IContacto } from './IContacto';
 
 
 // Administra los correos enviados
@@ -66,6 +68,15 @@ export class GestorCorreos {
 
     public guardarBorrador(correo: ICorreo): void {
         this._borradores.agregarCorreo(correo);
+    }
+
+    public editarBorrador(borrador: Correo, asunto: string, contenido: string, destinatarios: IContacto[]): void { //edita un correo que esta en Borradores
+        if (!this._borradores.contieneCorreo(borrador)) { //solo se pueden editar los borradores
+            throw new Error('Solo se pueden editar correos que están en Borradores.');
+        }
+        borrador.cambiarAsunto(asunto); //el gestor le pide al correo que se modifique
+        borrador.cambiarContenido(contenido);
+        borrador.cambiarDestinatarios(destinatarios);
     }
 
     public getBorradores(): ICorreo[] {
