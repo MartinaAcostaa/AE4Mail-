@@ -6,10 +6,10 @@ export class Correo implements ICorreo {
   private static _siguienteId: number = 1; //para crear ids unicos a los correos, empieza en 1
 
   private readonly _id: number; //id unico del correo, readonly para que no se pueda modificar
-  private readonly _asunto: string; 
-  private readonly _contenido: string;
+  private _asunto: string; //sin readonly se puede editar mientras es borrador 
+  private _contenido: string;
   private readonly _remitente: IContacto; //contacto que envia el correo
-  private readonly _destinatarios: IContacto[]; //lista de contactos a los que se les envia el correo
+  private _destinatarios: IContacto[]; //lista de contactos a los que se les envia el correo
   //private readonly _fechaCreacion: Date;
 
   private _leido: boolean; //estado de lectura
@@ -77,5 +77,20 @@ export class Correo implements ICorreo {
    // return new Date(this._fechaCreacion.getTime());
   //}
 
+  //metodos para editar un borrador (RF-07)
+  public cambiarAsunto(nuevoAsunto: string): void {
+    this._asunto = nuevoAsunto.trim(); //guarda el asunto sin espacios al inicio ni al final
+  }
+ 
+  public cambiarContenido(nuevoContenido: string): void {
+    this._contenido = nuevoContenido; //guarda el contenido tal cual
+  }
+
+  public cambiarDestinatarios(nuevosDestinatarios: IContacto[]): void {
+    if (!Array.isArray(nuevosDestinatarios) || nuevosDestinatarios.some(destinatario => destinatario == null)) {
+      throw new Error('Los destinatarios deben ser contactos validos'); //misma regla que en el constructor
+    }
+    this._destinatarios = [...nuevosDestinatarios]; //guarda una copia, igual que el constructor
+  }
 
 }
