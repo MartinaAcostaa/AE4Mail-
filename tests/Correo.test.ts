@@ -34,19 +34,17 @@ describe('RF-01: Creación de correos electrónicos', () => {
   });
 
 
-  it('rechaza datos obligatorios vacíos', () => {
-    const ana = new Contacto('Ana', 'ana@ejemplo.com');
+  it('rechaza crear un correo sin remitente o con destinatarios invalidos', () => {
     const luis = new Contacto('Luis', 'luis@ejemplo.com');
+    const ana = new Contacto('Ana', 'ana@ejemplo.com');
 
-    expect(() => new Correo('', 'Mensaje', ana, [luis]))
+    // el remitente es el unico dato obligatorio al crear un correo
+    expect(() => new Correo('Asunto', 'Mensaje', null as unknown as Contacto, [luis]))
+      .toThrow('El remitente es obligatorio.');
+
+    // la lista de destinatarios puede estar vacia, pero no puede tener elementos nulos
+    expect(() => new Correo('Asunto', 'Mensaje', ana, [null as unknown as Contacto]))
       .toThrow();
-
-    expect(() => new Correo('Asunto', '   ', ana, [luis]))
-      .toThrow();
-
-    expect(() => new Correo('Asunto', 'Mensaje', ana, []))
-      .toThrow();
-
   });
 
    it('no expone la colección interna de destinatarios', () => {

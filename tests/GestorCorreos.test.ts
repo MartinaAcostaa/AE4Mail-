@@ -61,26 +61,27 @@ describe('GestorCorreos', () => {
     expect(gestor.getEnviados()).toHaveLength(0);
 });
 
-    it('RF 2: No debe permitir crear un correo sin asunto', () => {
-        //Creamos 2 contactos
+    it('RF 2: No debe permitir enviar un correo sin asunto', () => {
+        const gestor = new GestorCorreos();
         const ana = new Contacto('Ana', 'ana@mail.com');
         const luis = new Contacto('Luis', 'luis@mail.com');
 
-        // Intentamos crear un correo pero al pasarle el asunto dejamos espacio
-        // El constructor de correo usa trim para quitar los espacios, como queda vacio se genera un error
-        expect(() => new Correo('   ', 'Contenido', ana, [luis]))
-        .toThrow('El asunto es obligatorio.'); // Se comprueba que el error sea el esperado
+        // El correo se puede crear sin asunto (puede ser un borrador), pero no se puede enviar
+        const correo = new Correo('   ', 'Contenido', ana, [luis]);
+        expect(() => gestor.enviarCorreo(correo)).toThrow('El asunto es obligatorio.');
+        expect(gestor.getEnviados()).toHaveLength(0);
     });
 
-    it('RF 2: No debe permitir crear un correo sin destinatarios', () => {
-    const ana = new Contacto('Ana', 'ana@mail.com'); // Creamos un contacto
+    it('RF 2: No debe permitir enviar un correo sin destinatarios', () => {
+        const gestor = new GestorCorreos();
+        const ana = new Contacto('Ana', 'ana@mail.com');
 
-    //Intentamos crear un correo con asunto y contenido validos, pero como destinatario pasamos un arreglo vacio
-    //El constructor comprueba que exista al menos un destinatario, como no hay ninguno se genera un error
-    expect(() => new Correo('Reunion', 'Contenido', ana, []))
-    .toThrow('Debe existir al menos un destinatario válido.'); // Se verifica que se haya producido ese error
+        // El correo se puede crear sin destinatarios (puede ser un borrador), pero no se puede enviar
+        const correo = new Correo('Reunion', 'Contenido', ana, []);
+        expect(() => gestor.enviarCorreo(correo)).toThrow('Debe existir al menos un destinatario válido.');
+        expect(gestor.getEnviados()).toHaveLength(0);
     });
-
+    
     it('RF 2: No debe permitir enviar un correo con destinatarios invalidos', () => {
 
     const gestor = new GestorCorreos(); // Creamos el gestor de correos

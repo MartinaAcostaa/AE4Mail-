@@ -23,22 +23,14 @@ export class Correo implements ICorreo {
     destinatarios: IContacto[]
   ) 
   {
-    if (!asunto || asunto.trim().length === 0) {
-      throw new Error('El asunto es obligatorio.');} //valida si el asunto existe
-
-    if (!contenido || contenido.trim().length === 0) {
-      throw new Error('El contenido es obligatorio.');} //valida si hay contenido
-
+    // un correo puede crearse incompleto porque puede ser un borrador (RF-07)
+    // lo unico obligatorio es el remitente, quien escribe el correo siemore existe
+    // la validacion para enviar (asunto y destinatarios) la hace la Bandeja de Enviados
     if (!remitente) {throw new Error('El remitente es obligatorio.');} //valida si hay remitente
 
-    if (
-      !Array.isArray(destinatarios) ||
-      destinatarios.length === 0 ||
-      destinatarios.some(destinatario => destinatario == null)
-    ) {
-      throw new Error('Debe existir al menos un destinatario válido.');
-    } // Verificamos que los destinatarios sean un arreglo,
-    // que haya por lo menos uno y que ninguno sea null o undefined
+    if (!Array.isArray(destinatarios) || destinatarios.some(destinatario => destinatario == null)) {
+      throw new Error('Los destinatarios deben ser contactos validos' ); 
+    } // la lista puede estar vacia, pero si tiene destinatarios ninguno puede ser null o undefined
 
     this._id = Correo._siguienteId++; //asignamos el  id actual e incrementaos el contador
     this._asunto = asunto.trim(); //guarda el asuntio sin espacios al inicio ni al final
