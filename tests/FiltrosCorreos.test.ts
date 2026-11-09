@@ -388,7 +388,21 @@ it('No debe permitir nombres repetidos ignorando mayúsculas', () => {
 });
 
 
+it('RF5: Los cambios en un correo se reflejan al volver a aplicar el filtro', () => {
+    // un filtro de correos con "Proyecto" en el asunto y dos correos
+    const gestor = new GestorFiltros();
+    gestor.agregarFiltro(new FiltroCorreo('Proyectos', correo => correo.getAsunto().toLowerCase().includes('proyecto')));
+    const correo1 = crearCorreo('Proyecto final', 'Contenido', 'ana@mail.com');
+    const correo2 = crearCorreo('Consulta', 'Contenido', 'luis@mail.com');
+    const bandeja = [correo1, correo2];
 
+    // al principio solo cumple el primero
+    expect(gestor.aplicarFiltro('Proyectos', bandeja)).toEqual([correo1]);
 
+    // cambiamos el asunto del segundo correo
+    correo2.cambiarAsunto('Proyecto nuevo');
 
+    // comprobamos que el filtro lo encuentra sin volver a guardar nada, porque evalua el correo en el momento
+    expect(gestor.aplicarFiltro('Proyectos', bandeja)).toEqual([correo1, correo2]);
+    });
 });
