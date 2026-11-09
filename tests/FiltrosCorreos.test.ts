@@ -387,7 +387,6 @@ it('No debe permitir nombres repetidos ignorando mayúsculas', () => {
     expect(() => gestor.agregarFiltro(filtro)).toThrow();
 });
 
-
 it('RF5: Los cambios en un correo se reflejan al volver a aplicar el filtro', () => {
     // un filtro de correos con "Proyecto" en el asunto y dos correos
     const gestor = new GestorFiltros();
@@ -404,5 +403,14 @@ it('RF5: Los cambios en un correo se reflejan al volver a aplicar el filtro', ()
 
     // comprobamos que el filtro lo encuentra sin volver a guardar nada, porque evalua el correo en el momento
     expect(gestor.aplicarFiltro('Proyectos', bandeja)).toEqual([correo1, correo2]);
+    });
+
+    it('RF5: No debe permitir crear un filtro sin nombre o sin condicion', () => {
+    // el nombre no puede estar vacio
+    expect(() => new FiltroCorreo('   ', () => true)).toThrow('El nombre del filtro es obligatorio.');
+
+    // la condicion tiene que ser una funcion
+    expect(() => new FiltroCorreo('Filtro', 'no es una funcion' as unknown as (correo: ICorreo) => boolean))
+        .toThrow('La condición debe ser una función.');
     });
 });
