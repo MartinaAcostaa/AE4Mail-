@@ -2,6 +2,7 @@
 import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaBorradores } from './BandejaBorradores';
+import { Buscador } from './Buscador';
 import { BandejaEliminados } from './BandejaEliminados';
 import { Correo } from './Correo';
 import { IContacto } from './IContacto';
@@ -14,6 +15,7 @@ export class GestorCorreos {
     private readonly _entrada = new BandejaEntrada(); //Bandeja de Entrada: correos que llegan
     private readonly _borradores = new BandejaBorradores();
     private readonly _eliminados = new BandejaEliminados();
+    private readonly _buscador = new Buscador(); //la logica de busqueda esta en su propia clase
 
 
     public enviarCorreo(correo: ICorreo): void {
@@ -109,8 +111,7 @@ export class GestorCorreos {
     public restaurarCorreo(correo: ICorreo): void {
         this._eliminados.restaurarCorreo(correo);
     }
-
-    
+ 
     public recibirCorreo(correo: ICorreo): void { //simula que llega un correo (no hay servidor real)
         this._entrada.agregarCorreo(correo); //lo guarda en la Bandeja de Entrada
     }
@@ -118,52 +119,14 @@ export class GestorCorreos {
     public getEntrada(): ICorreo[] { //devuelve una copia para que no se modifique la bandeja desde afuera
         return this._entrada.getCorreos();
     }
-
     public buscarEnEntrada(texto: string): ICorreo[] { //busca solo en la Bandeja de Entrada, como pide RF-04
-        return this.buscarCorreos(this._entrada.getCorreos(), texto); //reutiliza la busqueda pasandole la Entrada
+        return this._buscador.buscarEnEntrada(this._entrada, texto); //le delega la busqueda al Buscador
     }
 
-   public buscarCorreos(correos: ICorreo[], texto: string): ICorreo[] {
-
-    const busqueda = texto.trim().toLowerCase();
-
-    
-    if (!busqueda || !correos || correos.length === 0) {
-        return [];
+    public buscarCorreos(correos: ICorreo[], texto: string): ICorreo[] { //busca en cualquier coleccion
+        return this._buscador.buscarCorreos(correos, texto); //le delega la busqueda al Buscador
     }
-
-    return correos.filter(correo => {
-
-        const remitente = correo.getRemitente();
-        const destinatarios = correo.getDestinatarios();
-
-        // Buscamos en el asunto y contenido.
-        const coincideAsunto =
-            correo.getAsunto().toLowerCase().includes(busqueda);
-
-        const coincideContenido =
-            correo.getContenido().toLowerCase().includes(busqueda);
-
-        // Buscamos en el nombre y email del remitente.
-        const coincideRemitente =
-            remitente.getNombre().toLowerCase().includes(busqueda) ||
-            remitente.getEmail().toLowerCase().includes(busqueda);
-
-        // Buscamos en el nombre y email de los destinatarios.
-        const coincideDestinatario = destinatarios.some(destinatario =>
-            destinatario.getNombre().toLowerCase().includes(busqueda) ||
-            destinatario.getEmail().toLowerCase().includes(busqueda)
-        );
-
-        // Si coincide en al menos uno de los campos, incluimos el correo.
-        return coincideAsunto ||
-               coincideContenido ||
-               coincideRemitente ||
-               coincideDestinatario;
-    });
-   }
-
-   
 }
+
 
 
