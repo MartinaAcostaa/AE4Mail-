@@ -105,16 +105,29 @@ export class GestorCorreos {
                 entradaDestinatario.agregarCorreo(correo);
 
             }
-            }
+        }
 
     }
+
+    public recibirCorreo(correo: ICorreo, emailUsuario?: string): void {
+        const email = emailUsuario ?? correo.getDestinatarios()[0]?.getEmail();
+        if (!email) {
+            throw new Error('Se requiere un destinatario para recibir el correo.');
+        }
+        this.getBandejaEntradaUsuario(email).agregarCorreo(correo);
+    }
+
+    // ------------------------------------------------------------------------
+    // Gestión de Borradores
+    // ------------------------------------------------------------------------
+    public guardarBorrador(correo: ICorreo): void {
+        const emailRemitente = correo.getRemitente().getEmail();
+        this.getBandejaBorradoresUsuario(emailRemitente).agregarCorreo(correo);
+    }
+
 
     public getEnviados(): ICorreo[] {
         return this._enviados.getCorreos();
-    }
-
-    public guardarBorrador(correo: ICorreo): void {
-        this._borradores.agregarCorreo(correo);
     }
 
     public editarBorrador(borrador: Correo, asunto: string, contenido: string, destinatarios: IContacto[]): void { //edita un correo que esta en Borradores
