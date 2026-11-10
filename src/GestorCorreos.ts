@@ -137,19 +137,27 @@ export class GestorCorreos {
         borrador.cambiarDestinatarios(destinatarios);
     }
 
-
-
-    public getEnviados(): ICorreo[] {
-        return this._enviados.getCorreos();
+    // ------------------------------------------------------------------------
+    // Consultas de Bandejas por Usuario
+    // ------------------------------------------------------------------------
+    public getEntrada(emailUsuario: string): ICorreo[] {
+        return this.getBandejaEntradaUsuario(emailUsuario).getCorreos();
     }
 
-    public getBorradores(): ICorreo[] {
-        return this._borradores.getCorreos();
+    public getEnviados(emailUsuario: string): ICorreo[] {
+        return this.getBandejaEnviadosUsuario(emailUsuario).getCorreos();
     }
 
-    public getEliminados(): ICorreo[] {
-        return this._eliminados.getCorreos();
+    public getBorradores(emailUsuario: string): ICorreo[] {
+        return this.getBandejaBorradoresUsuario(emailUsuario).getCorreos();
     }
+
+    public getEliminados(emailUsuario: string): ICorreo[] {
+        return this.getBandejaEliminadosUsuario(emailUsuario).getCorreos();
+    }
+
+
+
 
     public eliminarCorreo(correo: ICorreo): void {
         if (this._entrada.contieneCorreo(correo)) {
@@ -174,13 +182,7 @@ export class GestorCorreos {
         this._eliminados.restaurarCorreo(correo);
     }
  
-    public recibirCorreo(correo: ICorreo): void { //simula que llega un correo (no hay servidor real)
-        this._entrada.agregarCorreo(correo); //lo guarda en la Bandeja de Entrada
-    }
 
-    public getEntrada(): ICorreo[] { //devuelve una copia para que no se modifique la bandeja desde afuera
-        return this._entrada.getCorreos();
-    }
     public buscarEnEntrada(texto: string): ICorreo[] { //busca solo en la Bandeja de Entrada, como pide RF-04
         return this._buscador.buscarEnEntrada(this._entrada, texto); //le delega la busqueda al Buscador
     }
