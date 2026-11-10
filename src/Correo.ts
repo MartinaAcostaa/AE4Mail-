@@ -15,6 +15,7 @@ export class Correo implements ICorreo {
   private _leido: boolean; //estado de lectura
   private _favorito: boolean; //si se marco como favorito
 
+
   
  constructor( //recibe asunt, contenido, remitente y destinatarios
     asunto: string,
@@ -42,6 +43,7 @@ export class Correo implements ICorreo {
     this._leido = false; //todo correo nuevo esta no leido
     this._favorito = false; //todo correo nuevo esta sin ser favorito
   }
+
   
   
   public get id(): number {
@@ -73,6 +75,7 @@ export class Correo implements ICorreo {
     return this._favorito;
   }
 
+
   //public getFechaCreacion(): Date {
    // return new Date(this._fechaCreacion.getTime());
   //}
@@ -92,5 +95,6 @@ export class Correo implements ICorreo {
     }
     this._destinatarios = [...nuevosDestinatarios]; //guarda una copia, igual que el constructor
   }
+
 
 }

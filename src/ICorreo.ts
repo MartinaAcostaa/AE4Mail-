@@ -10,5 +10,7 @@ export interface ICorreo {
     getLeido(): boolean;
     getFavorito(): boolean;
 
+    getRemitente(): IContacto;
+
 
 }
