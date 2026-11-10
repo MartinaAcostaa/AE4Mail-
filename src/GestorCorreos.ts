@@ -125,18 +125,22 @@ export class GestorCorreos {
         this.getBandejaBorradoresUsuario(emailRemitente).agregarCorreo(correo);
     }
 
+    public editarBorrador(borrador: Correo, asunto: string, contenido: string, destinatarios: IContacto[]): void {
+        const emailRemitente = borrador.getRemitente().getEmail();
+        const borradores = this.getBandejaBorradoresUsuario(emailRemitente);
+
+        if (!borradores.contieneCorreo(borrador)) {
+            throw new Error('Solo se pueden editar correos que están en Borradores.');
+        }
+        borrador.cambiarAsunto(asunto);
+        borrador.cambiarContenido(contenido);
+        borrador.cambiarDestinatarios(destinatarios);
+    }
+
+
 
     public getEnviados(): ICorreo[] {
         return this._enviados.getCorreos();
-    }
-
-    public editarBorrador(borrador: Correo, asunto: string, contenido: string, destinatarios: IContacto[]): void { //edita un correo que esta en Borradores
-        if (!this._borradores.contieneCorreo(borrador)) { //solo se pueden editar los borradores
-            throw new Error('Solo se pueden editar correos que están en Borradores.');
-        }
-        borrador.cambiarAsunto(asunto); //el gestor le pide al correo que se modifique
-        borrador.cambiarContenido(contenido);
-        borrador.cambiarDestinatarios(destinatarios);
     }
 
     public getBorradores(): ICorreo[] {
