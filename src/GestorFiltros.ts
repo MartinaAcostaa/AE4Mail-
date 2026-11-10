@@ -26,7 +26,7 @@ export class GestorFiltros {
 
         const existe = this._filtros.some( 
             f => f.nombre.toLowerCase() === filtro.nombre.toLowerCase()
-        ); // busca un filtro igual poniendolos a ambos en minusculas 
+        ); // busca al menos un filtro igual poniendolos a ambos en minusculas 
         // para encontrar coincidencias sin importar las mayusculas
 
         if (existe) { // si ya existe un filtro igual arroja error
@@ -38,9 +38,9 @@ export class GestorFiltros {
 
     // Aplica un filtro a una colección de correos
     public aplicarFiltro(nombre: string, correos: ICorreo[]): ICorreo[] {
-        const filtro = this._filtros.find(  // busca dentro del arreglo de filtros si existe algun filtro con el nombre que se recibio poniendolos a ambos en minusculas
+        const filtro = this._filtros.find(  
             f => f.nombre.toLowerCase() === nombre.trim().toLowerCase()
-        );
+        );// busca dentro del arreglo de filtros si existe algun filtro con el nombre que se recibio poniendolos a ambos en minusculas
 
         if (!filtro) { // si no existe arroja error
             throw new Error('No existe ese filtro.');

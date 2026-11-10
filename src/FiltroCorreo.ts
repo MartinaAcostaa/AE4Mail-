@@ -3,7 +3,7 @@ import { ICorreo } from './ICorreo';
 export class FiltroCorreo {
 
     private readonly _nombre: string;
-    private readonly _condicion: (correo: ICorreo) => boolean;
+    private readonly _condicion: (correo: ICorreo) => boolean; 
 
     constructor(
         nombre: string,
