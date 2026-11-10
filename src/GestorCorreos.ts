@@ -183,19 +183,24 @@ export class GestorCorreos {
         throw new Error('El correo no pertenece a ninguna bandeja activa.');
     }
 
+    public restaurarCorreo(correo: ICorreo, emailUsuario: string): void {
+        const eliminados = this.getBandejaEliminadosUsuario(emailUsuario);
+        eliminados.restaurarCorreo(correo);
+    }
 
-    public restaurarCorreo(correo: ICorreo): void {
-        this._eliminados.restaurarCorreo(correo);
+    // ------------------------------------------------------------------------
+    // Búsquedas
+    // ------------------------------------------------------------------------
+    public buscarEnEntrada(emailUsuario: string, texto: string): ICorreo[] {
+        const entrada = this.getBandejaEntradaUsuario(emailUsuario);
+        return this._buscador.buscarEnEntrada(entrada, texto);
+    }
+
+    public buscarCorreos(correos: ICorreo[], texto: string): ICorreo[] {
+        return this._buscador.buscarCorreos(correos, texto);
     }
  
 
-    public buscarEnEntrada(texto: string): ICorreo[] { //busca solo en la Bandeja de Entrada, como pide RF-04
-        return this._buscador.buscarEnEntrada(this._entrada, texto); //le delega la busqueda al Buscador
-    }
-
-    public buscarCorreos(correos: ICorreo[], texto: string): ICorreo[] { //busca en cualquier coleccion
-        return this._buscador.buscarCorreos(correos, texto); //le delega la busqueda al Buscador
-    }
 }
 
 
