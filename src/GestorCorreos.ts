@@ -156,27 +156,33 @@ export class GestorCorreos {
         return this.getBandejaEliminadosUsuario(emailUsuario).getCorreos();
     }
 
+    // ------------------------------------------------------------------------
+    // Eliminación y Restauración por Usuario
+    // ------------------------------------------------------------------------
+    public eliminarCorreo(correo: ICorreo, emailUsuario: string): void {
+        const entrada = this.getBandejaEntradaUsuario(emailUsuario);
+        const enviados = this.getBandejaEnviadosUsuario(emailUsuario);
+        const borradores = this.getBandejaBorradoresUsuario(emailUsuario);
+        const eliminados = this.getBandejaEliminadosUsuario(emailUsuario);
 
-
-
-    public eliminarCorreo(correo: ICorreo): void {
-        if (this._entrada.contieneCorreo(correo)) {
-            this._eliminados.eliminarDesde(correo, this._entrada);
+        if (entrada.contieneCorreo(correo)) {
+            eliminados.eliminarDesde(correo, entrada);
             return;
         }
 
-        if (this._enviados.contieneCorreo(correo)) {
-            this._eliminados.eliminarDesde(correo, this._enviados);
+        if (enviados.contieneCorreo(correo)) {
+            eliminados.eliminarDesde(correo, enviados);
             return;
         }
 
-        if (this._borradores.contieneCorreo(correo)) {
-            this._eliminados.eliminarDesde(correo, this._borradores);
+        if (borradores.contieneCorreo(correo)) {
+            eliminados.eliminarDesde(correo, borradores);
             return;
         }
 
         throw new Error('El correo no pertenece a ninguna bandeja activa.');
     }
+
 
     public restaurarCorreo(correo: ICorreo): void {
         this._eliminados.restaurarCorreo(correo);
