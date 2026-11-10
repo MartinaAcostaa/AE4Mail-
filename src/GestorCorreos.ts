@@ -80,20 +80,32 @@ export class GestorCorreos {
             throw new Error('Debe existir al menos un destinatario válido.'); //si la condicion se cumple (devuelve true) se genera el error
         }
 
-        // Verificamos que el correo no haya sido enviado anteriormente
-        const yaEnviado = this._enviados.contieneCorreo(correo);
+        
+        // Ahora sí: "remitente" existe y podemos llamar a getEmail()
+        const emailRemitente = remitente.getEmail();
+        const enviadosRemitente = this.getBandejaEnviadosUsuario(emailRemitente);
 
-        if (yaEnviado) { // Si ya fue enviado lanza error
-            throw new Error('Este correo ya fue enviado.');}
 
-         // Registramos el correo en la Bandeja de Enviados
-        this._enviados.agregarCorreo(correo);
-
-        // Si estaba guardado como borrador, lo quitamos al enviarlo.
-        if (this._borradores.contieneCorreo(correo)) {
-            this._borradores.quitarCorreo(correo);
+        if (enviadosRemitente.contieneCorreo(correo)) {
+            throw new Error('Este correo ya fue enviado.');
         }
 
+        enviadosRemitente.agregarCorreo(correo);
+
+        // Si estaba en borradores del remitente, se quita
+        const borradoresRemitente = this.getBandejaBorradoresUsuario(emailRemitente);
+        if (borradoresRemitente.contieneCorreo(correo)) {
+            borradoresRemitente.quitarCorreo(correo);
+        }
+
+        // Deposita el correo en la Bandeja de Entrada de cada destinatario
+        for (const dest of destinatarios) {
+            const entradaDestinatario = this.getBandejaEntradaUsuario(dest.getEmail());
+            if (!entradaDestinatario.contieneCorreo(correo)) {
+                entradaDestinatario.agregarCorreo(correo);
+
+            }
+            }
 
     }
 
