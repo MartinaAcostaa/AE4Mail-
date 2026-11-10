@@ -11,11 +11,12 @@ import { IContacto } from './IContacto';
 // Administra los correos enviados
 export class GestorCorreos {
 
-    private readonly _enviados = new BandejaEnviados();
-    private readonly _entrada = new BandejaEntrada(); //Bandeja de Entrada: correos que llegan
-    private readonly _borradores = new BandejaBorradores();
-    private readonly _eliminados = new BandejaEliminados();
-    private readonly _buscador = new Buscador(); //la logica de busqueda esta en su propia clase
+    private readonly _entradas = new Map<string, BandejaEntrada>();
+    private readonly _enviados = new Map<string, BandejaEnviados>();
+    private readonly _borradores = new Map<string, BandejaBorradores>();
+    private readonly _eliminados = new Map<string, BandejaEliminados>();
+
+    private readonly _buscador = new Buscador();
 
 
     public enviarCorreo(correo: ICorreo): void {
