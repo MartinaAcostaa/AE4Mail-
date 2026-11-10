@@ -18,6 +18,38 @@ export class GestorCorreos {
 
     private readonly _buscador = new Buscador();
 
+    private getBandejaEntradaUsuario(email: string): BandejaEntrada {
+        const emailNorm = email.trim().toLowerCase();
+        if (!this._entradas.has(emailNorm)) {
+            this._entradas.set(emailNorm, new BandejaEntrada());
+        }
+        return this._entradas.get(emailNorm)!;
+    }
+
+    private getBandejaEnviadosUsuario(email: string): BandejaEnviados {
+        const emailNorm = email.trim().toLowerCase();
+        if (!this._enviados.has(emailNorm)) {
+            this._enviados.set(emailNorm, new BandejaEnviados());
+        }
+        return this._enviados.get(emailNorm)!;
+    }
+
+    private getBandejaBorradoresUsuario(email: string): BandejaBorradores {
+        const emailNorm = email.trim().toLowerCase();
+        if (!this._borradores.has(emailNorm)) {
+            this._borradores.set(emailNorm, new BandejaBorradores());
+        }
+        return this._borradores.get(emailNorm)!;
+    }
+
+    private getBandejaEliminadosUsuario(email: string): BandejaEliminados {
+        const emailNorm = email.trim().toLowerCase();
+        if (!this._eliminados.has(emailNorm)) {
+            this._eliminados.set(emailNorm, new BandejaEliminados());
+        }
+        return this._eliminados.get(emailNorm)!;
+    }
+
 
     public enviarCorreo(correo: ICorreo): void {
 
