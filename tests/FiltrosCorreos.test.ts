@@ -73,7 +73,7 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
             .toThrow('No se pueden agregar más de cinco filtros.');
     });
 
-     // TEST 3: No permitir filtros con nombres repetidos
+     // TEST 3: No permitir filtros con nombres repetidos al crear filtros
     it('Rf5: No debe permitir registrar dos filtros con el mismo nombre', () => {
 
         // Creamos un gestor nuevo
