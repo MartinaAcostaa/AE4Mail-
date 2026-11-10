@@ -50,15 +50,15 @@ describe('RF-07: Gestión de borradores', () => {
     gestor.editarBorrador(borrador, 'Reunion', 'Nos vemos el lunes', [luis]);
 
     //el borrador recuperado tiene los cambios 
-    const recuperado = gestor.getBorradores()[0];
+    const recuperado = gestor.getBorradores('ana@mail.com')[0];
     expect(recuperado.getAsunto()).toBe('Reunion');
     expect(recuperado.getDestinatarios()).toEqual([luis]);
     
     gestor.enviarCorreo(borrador);
 
     //el borrador ya no esta en la bandeja de borradores y si en la de enviados
-    expect(gestor.getEnviados()).toEqual([borrador]);
-    expect(gestor.getBorradores()).toEqual([]);
+    expect(gestor.getEnviados('ana@mail.com')).toEqual([borrador]);
+    expect(gestor.getBorradores('ana@mail.com')).toEqual([]);
     });
 
     it('un borrador incompleto no se puede enviar y queda en Borradores', () => {
@@ -68,8 +68,8 @@ describe('RF-07: Gestión de borradores', () => {
     gestor.guardarBorrador(borrador);
 
     expect(() => gestor.enviarCorreo(borrador)).toThrow();
-    expect(gestor.getBorradores()).toEqual([borrador]);
-    expect(gestor.getEnviados()).toEqual([]);
+    expect(gestor.getBorradores('ana@mail.com')).toEqual([borrador]);
+    expect(gestor.getEnviados('ana@mail.com')).toEqual([]);
     });
 
     it('solo permite editar correos que estan en Borradores', () => {
@@ -78,7 +78,7 @@ describe('RF-07: Gestión de borradores', () => {
     const ana = new Contacto('Ana', 'ana@mail.com');
     const luis = new Contacto('Luis', 'luis@mail.com');
     const recibido = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
-    gestor.recibirCorreo(recibido);
+    gestor.recibirCorreo(recibido, 'luis@mail.com');
 
     expect(() => gestor.editarBorrador(recibido, 'Otro asunto', 'Otro texto', [luis])).toThrow();
     expect(recibido.getAsunto()).toBe('Reunion');

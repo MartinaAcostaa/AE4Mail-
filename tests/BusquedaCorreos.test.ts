@@ -13,15 +13,15 @@ describe('RF-04: Búsqueda de correos en la Bandeja de Entrada', () => {
     const correo = new Correo('Reunion', 'Nos reunimos mañana.', ana, [luis]);
 
     // simulamos que el correo llega
-    gestor.recibirCorreo(correo);
+    gestor.recibirCorreo(correo, 'luis@mail.com');
 
     // comprobar: esta en la Entrada y es el mismo objeto
-    expect(gestor.getEntrada()).toHaveLength(1);
-    expect(gestor.getEntrada()[0]).toBe(correo);
+    expect(gestor.getEntrada('ana@mail.com')).toHaveLength(1);
+    expect(gestor.getEntrada('ana@mail.com')[0]).toBe(correo);
 
     // la Entrada devuelve una copia: modificarla no cambia la bandeja original
-    gestor.getEntrada().pop();
-    expect(gestor.getEntrada()).toHaveLength(1);
+    gestor.getEntrada('ana@mail.com').pop();
+    expect(gestor.getEntrada('ana@mail.com')).toHaveLength(1);
     });
 
     it('busca solo en los correos de la Bandeja de Entrada', () => {
@@ -31,11 +31,11 @@ describe('RF-04: Búsqueda de correos en la Bandeja de Entrada', () => {
     const luis = new Contacto('Luis', 'luis@mail.com');
     const recibido = new Correo('Proyecto final', 'Te paso el informe', ana, [luis]);
     const enviado = new Correo('Proyecto nuevo', 'Arrancamos el lunes', luis, [ana]);
-    gestor.recibirCorreo(recibido);
+    gestor.recibirCorreo(recibido, 'luis@mail.com');
     gestor.enviarCorreo(enviado);
 
     // buscamos un texto que esta en los dos correos
-    const resultado = gestor.buscarEnEntrada('proyecto');
+    const resultado = gestor.buscarEnEntrada('ana@mail.com', 'proyecto');
 
     // solo encuentra el de la Entrada, no el de Enviados
     expect(resultado).toEqual([recibido]);

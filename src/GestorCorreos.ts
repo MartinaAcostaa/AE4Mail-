@@ -52,61 +52,56 @@ export class GestorCorreos {
 
 
     public enviarCorreo(correo: ICorreo): void {
-
-        // Verificamos que exista el correo
+        // 1. Verificamos que exista el correo
         if (!correo) {
             throw new Error('El correo es obligatorio.');
         }
 
-        // Verificamos que tenga remitente
-        if (!correo.getRemitente()) {
+        // 2. Guardamos el remitente en la variable "remitente"
+        const remitente = correo.getRemitente();
+        if (!remitente) {
             throw new Error('El remitente es obligatorio.');
         }
 
-        // Verificamos que tenga asunto
+        // 3. Verificamos que tenga asunto
         if (!correo.getAsunto() || correo.getAsunto().trim().length === 0) {
             throw new Error('El asunto es obligatorio.');
         }
 
-        
-        // Verificamos que tenga al menos un destinatario valido
+        // 4. Verificamos que tenga destinatarios válidos
         const destinatarios = correo.getDestinatarios();
         if (
-            !Array.isArray(destinatarios) || //comprueba si la variable destinatarios es un arreglo
-            destinatarios.length === 0 || // /comprueba si la lista de destinatarios no tiene ningun elemento, si la lista esta vacia no tiene  ningun elemento
-            destinatarios.some(destinatario => destinatario == null) //recorre los elementos del arreglo  comprueba si al menos uno es null o undefined
-            //si al menos uno cumple la conducion devuelve true
+            !Array.isArray(destinatarios) ||
+            destinatarios.length === 0 ||
+            destinatarios.some(destinatario => destinatario == null)
         ) {
-            throw new Error('Debe existir al menos un destinatario válido.'); //si la condicion se cumple (devuelve true) se genera el error
+            throw new Error('Debe existir al menos un destinatario válido.');
         }
 
-        
-        // Ahora sí: "remitente" existe y podemos llamar a getEmail()
+        // 5. Ahora sí podemos acceder a remitente.getEmail()
         const emailRemitente = remitente.getEmail();
         const enviadosRemitente = this.getBandejaEnviadosUsuario(emailRemitente);
-
 
         if (enviadosRemitente.contieneCorreo(correo)) {
             throw new Error('Este correo ya fue enviado.');
         }
 
+        // Registramos en Enviados del remitente
         enviadosRemitente.agregarCorreo(correo);
 
-        // Si estaba en borradores del remitente, se quita
+        // Si estaba en borradores del remitente, se remueve
         const borradoresRemitente = this.getBandejaBorradoresUsuario(emailRemitente);
         if (borradoresRemitente.contieneCorreo(correo)) {
             borradoresRemitente.quitarCorreo(correo);
         }
 
-        // Deposita el correo en la Bandeja de Entrada de cada destinatario
+        // Entregamos en la Entrada de cada destinatario
         for (const dest of destinatarios) {
             const entradaDestinatario = this.getBandejaEntradaUsuario(dest.getEmail());
             if (!entradaDestinatario.contieneCorreo(correo)) {
                 entradaDestinatario.agregarCorreo(correo);
-
             }
         }
-
     }
 
     public recibirCorreo(correo: ICorreo, emailUsuario?: string): void {

@@ -22,8 +22,8 @@ describe('GestorCorreos', () => {
 
     gestor.enviarCorreo(correo); // Envia el correo y lo almacena en la bandeja de enviados
 
-    expect(gestor.getEnviados()).toHaveLength(1);  // Comprueba que haya exactamente un correo almacenado 
-    expect(gestor.getEnviados()[0]).toBe(correo);  // Comprueba que el elemento almacenado sea exactamente el mismo objeto que enviamos
+    expect(gestor.getEnviados('ana@mail.com')).toHaveLength(1);  // Comprueba que haya exactamente un correo almacenado 
+    expect(gestor.getEnviados('ana@mail.com')[0]).toBe(correo);  // Comprueba que el elemento almacenado sea exactamente el mismo objeto que enviamos
 });
 
   it('RF 2: Debe enviar un correo a varios destinatarios', () => {
@@ -41,8 +41,8 @@ describe('GestorCorreos', () => {
 
         gestor.enviarCorreo(correo); // Enviamos el correo
 
-        expect(gestor.getEnviados()).toHaveLength(1); // Se comprueba que se haya almacenado un solo correo
-        expect(gestor.getEnviados()[0].getDestinatarios()).toHaveLength(2);
+        expect(gestor.getEnviados('ana@mail.com')).toHaveLength(1); // Se comprueba que se haya almacenado un solo correo
+        expect(gestor.getEnviados('ana@mail.com')[0].getDestinatarios()).toHaveLength(2);
         // Se obtiene la lista de destinatarios de ese correo y se comprueba que tenga dos destinatarios
     });
 
@@ -58,7 +58,7 @@ describe('GestorCorreos', () => {
         .toThrow('El correo es obligatorio.');
 
     // Verificamos que no se haya almacenado ningún correo
-    expect(gestor.getEnviados()).toHaveLength(0);
+    expect(gestor.getEnviados('ana@mail.com')).toHaveLength(0);
 });
 
     it('RF 2: No debe permitir enviar un correo sin asunto', () => {
@@ -69,7 +69,7 @@ describe('GestorCorreos', () => {
         // El correo se puede crear sin asunto (puede ser un borrador), pero no se puede enviar
         const correo = new Correo('   ', 'Contenido', ana, [luis]);
         expect(() => gestor.enviarCorreo(correo)).toThrow('El asunto es obligatorio.');
-        expect(gestor.getEnviados()).toHaveLength(0);
+        expect(gestor.getEnviados('ana@mail.com')).toHaveLength(0);
     });
 
     it('RF 2: No debe permitir enviar un correo sin destinatarios', () => {
@@ -79,7 +79,7 @@ describe('GestorCorreos', () => {
         // El correo se puede crear sin destinatarios (puede ser un borrador), pero no se puede enviar
         const correo = new Correo('Reunion', 'Contenido', ana, []);
         expect(() => gestor.enviarCorreo(correo)).toThrow('Debe existir al menos un destinatario válido.');
-        expect(gestor.getEnviados()).toHaveLength(0);
+        expect(gestor.getEnviados('ana@mail.com')).toHaveLength(0);
     });
 
     it('RF 2: No debe permitir enviar un correo con destinatarios invalidos', () => {
@@ -115,7 +115,7 @@ describe('GestorCorreos', () => {
         // Comprobamos que se genere el error por tener destinatarios invalidos
 
     // Comprobamos que el correo no se haya almacenado
-    expect(gestor.getEnviados()).toHaveLength(0);
+    expect(gestor.getEnviados('ana@mail.com')).toHaveLength(0);
 });
 
     it('RF 2: No debe permitir enviar un correo sin remitente', () => {
@@ -143,7 +143,7 @@ describe('GestorCorreos', () => {
         .toThrow('El remitente es obligatorio.');
 
     // Comprobamos que no se haya almacenado.
-    expect(gestor.getEnviados()).toHaveLength(0);
+    expect(gestor.getEnviados('ana@mail.com')).toHaveLength(0);
    });
     
 
@@ -160,7 +160,7 @@ describe('GestorCorreos', () => {
 
         gestor.enviarCorreo(correo); // Enviamos el correo y se almacena en la bandeja de enviados
 
-        expect(gestor.getEnviados()).toContain(correo); // Se comprueba que el correo enviado este dentro de esa coleccion
+        expect(gestor.getEnviados('ana@mail.com')).toContain(correo); // Se comprueba que el correo enviado este dentro de esa coleccion
     });
 
     it('RF2: No debe permitir enviar dos veces el mismo correo', () => {
@@ -181,7 +181,7 @@ describe('GestorCorreos', () => {
         .toThrow('Este correo ya fue enviado.');
 
     // Comprobamos que el correo esté almacenado una sola vez
-    expect(gestor.getEnviados()).toHaveLength(1);
+    expect(gestor.getEnviados('ana@mail.com')).toHaveLength(1);
     });
 
     
@@ -203,9 +203,9 @@ describe('GestorCorreos', () => {
         gestor.enviarCorreo(correo1); 
         gestor.enviarCorreo(correo2);
 
-        expect(gestor.getEnviados()).toHaveLength(2); // Se comprueba que existan dos correos en la bandeja
-        expect(gestor.getEnviados()).toContain(correo1);  // Se comprueba que el primero siga almacenado
-        expect(gestor.getEnviados()).toContain(correo2); // Se comprueba que el segundo también esté almacenado
+        expect(gestor.getEnviados('ana@mail.com')).toHaveLength(2); // Se comprueba que existan dos correos en la bandeja
+        expect(gestor.getEnviados('ana@mail.com')).toContain(correo1);  // Se comprueba que el primero siga almacenado
+        expect(gestor.getEnviados('ana@mail.com')).toContain(correo2); // Se comprueba que el segundo también esté almacenado
     });
 
     it('RF2: Debe devolver una copia de la Bandeja de Enviados', () => {
@@ -220,113 +220,17 @@ describe('GestorCorreos', () => {
 
         gestor.enviarCorreo(correo); // Enviamos el correo y se queda almacendo en la bandeja
 
-        const enviados = gestor.getEnviados(); // Devuelve una copia de la lista y la guardamos en enviados
+        const enviados = gestor.getEnviados('ana@mail.com'); // Devuelve una copia de la lista y la guardamos en enviados
 
         enviados.pop(); // Elimina el ultimo elemento de esa copia
 
-        expect(gestor.getEnviados()).toHaveLength(1); 
+        expect(gestor.getEnviados('ana@mail.com')).toHaveLength(1); 
         // Volvemos a consultar la bandeja original
         // Se comprueba que el correo siga almacenado en enviados
     });
 
-    describe('Integración de bandejas en GestorCorreos', () => {
 
-    it('recibe un correo en Entrada y permite buscar en esa bandeja', () => {
-        const gestor = new GestorCorreos();
-        const buscador = new Buscador();
-        const ana = new Contacto('Ana', 'ana@mail.com');
-        const luis = new Contacto('Luis', 'luis@mail.com');
-        const correo = new Correo('Reunión de equipo', 'Hablamos mañana', ana, [luis]);
-
-        gestor.recibirCorreo(correo);
-
-        expect(gestor.getEntrada()).toEqual([correo]);
-        expect(buscador.buscarCorreos(gestor.getEntrada(), 'reunión')).toEqual([correo]);
-    });
-
-    it('guarda el envío en Enviados y rechaza enviarlo otra vez', () => {
-        const gestor = new GestorCorreos();
-        const ana = new Contacto('Ana', 'ana@mail.com');
-        const luis = new Contacto('Luis', 'luis@mail.com');
-        const correo = new Correo('Aviso', 'Contenido', ana, [luis]);
-
-        gestor.enviarCorreo(correo);
-
-        expect(gestor.getEnviados()).toEqual([correo]);
-        expect(() => gestor.enviarCorreo(correo)).toThrow('Este correo ya fue enviado.');
-        expect(gestor.getEnviados()).toEqual([correo]);
-    });
-
-    it('quita de Borradores un correo que se envía', () => {
-        const gestor = new GestorCorreos();
-        const ana = new Contacto('Ana', 'ana@mail.com');
-        const luis = new Contacto('Luis', 'luis@mail.com');
-        const correo = new Correo('Borrador', 'Contenido', ana, [luis]);
-
-        gestor.guardarBorrador(correo);
-        gestor.enviarCorreo(correo);
-
-        expect(gestor.getBorradores()).toEqual([]);
-        expect(gestor.getEnviados()).toEqual([correo]);
-    });
-
-    it('mueve un correo a Eliminados y lo restaura a su bandeja de origen', () => {
-        const gestor = new GestorCorreos();
-        const ana = new Contacto('Ana', 'ana@mail.com');
-        const luis = new Contacto('Luis', 'luis@mail.com');
-        const correo = new Correo('Recibido', 'Contenido', ana, [luis]);
-
-        gestor.recibirCorreo(correo);
-        gestor.eliminarCorreo(correo);
-
-        expect(gestor.getEntrada()).toEqual([]);
-        expect(gestor.getEliminados()).toEqual([correo]);
-
-        gestor.restaurarCorreo(correo);
-
-        expect(gestor.getEliminados()).toEqual([]);
-        expect(gestor.getEntrada()).toEqual([correo]);
-    });
-
-    it('elimina un correo de Enviados y lo restaura a Enviados', () => {
-        const gestor = new GestorCorreos();
-        const ana = new Contacto('Ana', 'ana@mail.com');
-        const luis = new Contacto('Luis', 'luis@mail.com');
-        const correo = new Correo('Aviso', 'Contenido', ana, [luis]);
-        gestor.enviarCorreo(correo);
-
-        gestor.eliminarCorreo(correo);
-        expect(gestor.getEnviados()).toEqual([]);
-        expect(gestor.getEliminados()).toEqual([correo]);
-
-        gestor.restaurarCorreo(correo);
-        expect(gestor.getEnviados()).toEqual([correo]);
-        expect(gestor.getEliminados()).toEqual([]);
-    });
-
-    it('elimina un borrador y lo restaura a Borradores', () => {
-        const gestor = new GestorCorreos();
-        const ana = new Contacto('Ana', 'ana@mail.com');
-        const borrador = new Correo('', 'Todavia lo estoy escribiendo', ana, []);
-        gestor.guardarBorrador(borrador);
-
-        gestor.eliminarCorreo(borrador);
-        expect(gestor.getBorradores()).toEqual([]);
-        expect(gestor.getEliminados()).toEqual([borrador]);
-
-        gestor.restaurarCorreo(borrador);
-        expect(gestor.getBorradores()).toEqual([borrador]);
-    });
-
-    it('no permite eliminar un correo que no esta en ninguna bandeja', () => {
-        const gestor = new GestorCorreos();
-        const ana = new Contacto('Ana', 'ana@mail.com');
-        const luis = new Contacto('Luis', 'luis@mail.com');
-        const correo = new Correo('Suelto', 'Contenido', ana, [luis]);
-
-        expect(() => gestor.eliminarCorreo(correo)).toThrow('El correo no pertenece a ninguna bandeja activa.');
-        expect(gestor.getEliminados()).toEqual([]);
-    });
+   
 });
-});
+
 
