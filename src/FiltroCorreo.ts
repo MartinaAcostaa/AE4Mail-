@@ -3,9 +3,10 @@ import { ICorreo } from './ICorreo';
 export class FiltroCorreo {
 
     private readonly _nombre: string;
-    private readonly _condicion: (correo: ICorreo) => boolean; 
+    private readonly _condicion: (correo: ICorreo) => boolean;  //la condicion va a ser una funcion que reciba 
+    //como parametro un objeto correo que cumpla con la interfaz ICorreo y devolvera true o false
 
-    constructor(
+    constructor( //a crear un filtro se toma el nombre y la condicion
         nombre: string,
         condicion: (correo: ICorreo) => boolean
     ) {
