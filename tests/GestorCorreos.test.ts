@@ -340,6 +340,41 @@ describe('GestorCorreos', () => {
     });
   });
 
+  describe('Flujo de envío múltiple y aislamiento de eliminación por usuario', () => {
+
+  it('envía un correo a 3 destinatarios y verifica su presencia en Enviados del remitente y en la Entrada de los 3 destinatarios', () => {
+    const gestor = new GestorCorreos();
+
+    // 1. Preparar el remitente y los 3 destinatarios
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const maria = new Contacto('Maria', 'maria@mail.com');
+    const pedro = new Contacto('Pedro', 'pedro@mail.com');
+
+    // 2. Crear un correo de Ana para Luis, Maria y Pedro
+    const correo = new Correo(
+      'Comunicado importante',
+      'Reunión general mañana a las 9 AM',
+      ana,
+      [luis, maria, pedro]
+    );
+
+    // 3. Enviar el correo
+    gestor.enviarCorreo(correo);
+
+    // 4. Verificar que esté en la Bandeja de Enviados del remitente (Ana)
+    expect(gestor.getEnviados('ana@mail.com')).toEqual([correo]);
+    expect(gestor.getEnviados('ana@mail.com')[0].getDestinatarios()).toHaveLength(3);
+
+    // 5. Verificar que esté en la Bandeja de Entrada de CADA uno de los destinatarios
+    expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
+    expect(gestor.getEntrada('maria@mail.com')).toEqual([correo]);
+    expect(gestor.getEntrada('pedro@mail.com')).toEqual([correo]);
+  });
+
+
+});
+
 
    
 });
