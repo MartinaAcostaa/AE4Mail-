@@ -229,6 +229,117 @@ describe('GestorCorreos', () => {
         // Se comprueba que el correo siga almacenado en enviados
     });
 
+    describe('Integración de bandejas por usuario en GestorCorreos', () => {
+    it('recibe un correo en Entrada y permite buscar en esa bandeja', () => {
+      const gestor = new GestorCorreos();
+      const buscador = new Buscador();
+      const ana = new Contacto('Ana', 'ana@mail.com');
+      const luis = new Contacto('Luis', 'luis@mail.com');
+      const correo = new Correo('Reunión de equipo', 'Hablamos mañana', ana, [luis]);
+
+      // Se recibe en la casilla de Luis (destinatario)
+      gestor.recibirCorreo(correo, 'luis@mail.com');
+
+      expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
+      expect(buscador.buscarCorreos(gestor.getEntrada('luis@mail.com'), 'reunión')).toEqual([correo]);
+    });
+
+    it('guarda el envío en Enviados y rechaza enviarlo otra vez', () => {
+      const gestor = new GestorCorreos();
+      const ana = new Contacto('Ana', 'ana@mail.com');
+      const luis = new Contacto('Luis', 'luis@mail.com');
+      const correo = new Correo('Aviso', 'Contenido', ana, [luis]);
+
+      gestor.enviarCorreo(correo);
+
+      expect(gestor.getEnviados('ana@mail.com')).toEqual([correo]);
+      expect(() => gestor.enviarCorreo(correo)).toThrow('Este correo ya fue enviado.');
+      expect(gestor.getEnviados('ana@mail.com')).toEqual([correo]);
+    });
+
+    it('quita de Borradores un correo que se envía', () => {
+      const gestor = new GestorCorreos();
+      const ana = new Contacto('Ana', 'ana@mail.com');
+      const luis = new Contacto('Luis', 'luis@mail.com');
+      const correo = new Correo('Borrador', 'Contenido', ana, [luis]);
+
+      gestor.guardarBorrador(correo);
+      gestor.enviarCorreo(correo);
+
+      expect(gestor.getBorradores('ana@mail.com')).toEqual([]);
+      expect(gestor.getEnviados('ana@mail.com')).toEqual([correo]);
+      expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
+    });
+
+    it('mueve un correo a Eliminados y lo restaura a su bandeja de origen', () => {
+      const gestor = new GestorCorreos();
+      const ana = new Contacto('Ana', 'ana@mail.com');
+      const luis = new Contacto('Luis', 'luis@mail.com');
+      const correo = new Correo('Recibido', 'Contenido', ana, [luis]);
+
+      // El correo entra a la casilla de Luis
+      gestor.recibirCorreo(correo, 'luis@mail.com');
+      
+      // Se elimina de la casilla de Luis
+      gestor.eliminarCorreo(correo, 'luis@mail.com');
+
+      expect(gestor.getEntrada('luis@mail.com')).toEqual([]);
+      expect(gestor.getEliminados('luis@mail.com')).toEqual([correo]);
+
+      // Se restaura en la casilla de Luis
+      gestor.restaurarCorreo(correo, 'luis@mail.com');
+
+      expect(gestor.getEliminados('luis@mail.com')).toEqual([]);
+      expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
+    });
+
+    it('elimina un correo de Enviados y lo restaura a Enviados', () => {
+      const gestor = new GestorCorreos();
+      const ana = new Contacto('Ana', 'ana@mail.com');
+      const luis = new Contacto('Luis', 'luis@mail.com');
+      const correo = new Correo('Aviso', 'Contenido', ana, [luis]);
+
+      gestor.enviarCorreo(correo);
+
+      // Ana elimina su correo enviado
+      gestor.eliminarCorreo(correo, 'ana@mail.com');
+      expect(gestor.getEnviados('ana@mail.com')).toEqual([]);
+      expect(gestor.getEliminados('ana@mail.com')).toEqual([correo]);
+
+      // Ana restaura su correo a Enviados
+      gestor.restaurarCorreo(correo, 'ana@mail.com');
+      expect(gestor.getEnviados('ana@mail.com')).toEqual([correo]);
+      expect(gestor.getEliminados('ana@mail.com')).toEqual([]);
+    });
+
+    it('elimina un borrador y lo restaura a Borradores', () => {
+      const gestor = new GestorCorreos();
+      const ana = new Contacto('Ana', 'ana@mail.com');
+      const borrador = new Correo('', 'Todavia lo estoy escribiendo', ana, []);
+
+      gestor.guardarBorrador(borrador);
+      gestor.eliminarCorreo(borrador, 'ana@mail.com');
+
+      expect(gestor.getBorradores('ana@mail.com')).toEqual([]);
+      expect(gestor.getEliminados('ana@mail.com')).toEqual([borrador]);
+
+      gestor.restaurarCorreo(borrador, 'ana@mail.com');
+      expect(gestor.getBorradores('ana@mail.com')).toEqual([borrador]);
+    });
+
+    it('no permite eliminar un correo que no esta en ninguna bandeja', () => {
+      const gestor = new GestorCorreos();
+      const ana = new Contacto('Ana', 'ana@mail.com');
+      const luis = new Contacto('Luis', 'luis@mail.com');
+      const correo = new Correo('Suelto', 'Contenido', ana, [luis]);
+
+      expect(() => gestor.eliminarCorreo(correo, 'ana@mail.com')).toThrow(
+        'El correo no pertenece a ninguna bandeja activa.'
+      );
+      expect(gestor.getEliminados('ana@mail.com')).toEqual([]);
+    });
+  });
+
 
    
 });
