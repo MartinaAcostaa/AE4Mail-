@@ -25,19 +25,21 @@ describe('RF-04: Búsqueda de correos en la Bandeja de Entrada', () => {
     });
 
     it('busca solo en los correos de la Bandeja de Entrada', () => {
-    // un correo que llega a la Entrada y otro que se envia (va a Enviados)
+    // Un correo que le llega a Luis (va a su Entrada)
+    // y otro que Luis le envía a Ana (va a Enviados de Luis y Entrada de Ana)
     const gestor = new GestorCorreos();
     const ana = new Contacto('Ana', 'ana@mail.com');
     const luis = new Contacto('Luis', 'luis@mail.com');
     const recibido = new Correo('Proyecto final', 'Te paso el informe', ana, [luis]);
     const enviado = new Correo('Proyecto nuevo', 'Arrancamos el lunes', luis, [ana]);
-    gestor.recibirCorreo(recibido, 'luis@mail.com');
-    gestor.enviarCorreo(enviado);
+    gestor.recibirCorreo(recibido, 'luis@mail.com'); //luis recibe el correo de ana
+    gestor.enviarCorreo(enviado); //luis le envia un correo a ana (queda en enviados de luis)
+ 
+    // Buscamos en la Bandeja de Entrada de LUIS
+    const resultado = gestor.buscarEnEntrada('luis@mail.com', 'proyecto');
 
-    // buscamos un texto que esta en los dos correos
-    const resultado = gestor.buscarEnEntrada('ana@mail.com', 'proyecto');
 
-    // solo encuentra el de la Entrada, no el de Enviados
+    // En la Entrada de Luis SOLO debe estar el que él recibió, no el que envió
     expect(resultado).toEqual([recibido]);
     });
 });
