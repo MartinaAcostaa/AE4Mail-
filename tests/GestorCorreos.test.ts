@@ -345,13 +345,13 @@ describe('GestorCorreos', () => {
   it('envía un correo a 3 destinatarios y verifica su presencia en Enviados del remitente y en la Entrada de los 3 destinatarios', () => {
     const gestor = new GestorCorreos();
 
-    // 1. Preparar el remitente y los 3 destinatarios
+    // Preparar el remitente y los 3 destinatarios
     const ana = new Contacto('Ana', 'ana@mail.com');
     const luis = new Contacto('Luis', 'luis@mail.com');
     const maria = new Contacto('Maria', 'maria@mail.com');
     const pedro = new Contacto('Pedro', 'pedro@mail.com');
 
-    // 2. Crear un correo de Ana para Luis, Maria y Pedro
+    // Crear un correo de Ana para Luis, Maria y Pedro
     const correo = new Correo(
       'Comunicado importante',
       'Reunión general mañana a las 9 AM',
@@ -359,19 +359,54 @@ describe('GestorCorreos', () => {
       [luis, maria, pedro]
     );
 
-    // 3. Enviar el correo
+    // Enviar el correo
     gestor.enviarCorreo(correo);
 
-    // 4. Verificar que esté en la Bandeja de Enviados del remitente (Ana)
+    // Verificar que esté en la Bandeja de Enviados del remitente (Ana)
     expect(gestor.getEnviados('ana@mail.com')).toEqual([correo]);
     expect(gestor.getEnviados('ana@mail.com')[0].getDestinatarios()).toHaveLength(3);
 
-    // 5. Verificar que esté en la Bandeja de Entrada de CADA uno de los destinatarios
+    // Verificar que esté en la Bandeja de Entrada de CADA uno de los destinatarios
     expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
     expect(gestor.getEntrada('maria@mail.com')).toEqual([correo]);
     expect(gestor.getEntrada('pedro@mail.com')).toEqual([correo]);
   });
 
+  it('elimina el correo de la bandeja de uno de los destinatarios y verifica el aislamiento entre casilleros', () => {
+    const gestor = new GestorCorreos();
+
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const maria = new Contacto('Maria', 'maria@mail.com');
+    const pedro = new Contacto('Pedro', 'pedro@mail.com');
+
+    const correo = new Correo(
+      'Comunicado importante',
+      'Reunión general mañana a las 9 AM',
+      ana,
+      [luis, maria, pedro]
+    );
+
+    gestor.enviarCorreo(correo);
+
+    // Luis elimina el correo de su casilla
+    gestor.eliminarCorreo(correo, 'luis@mail.com');
+
+    // Verificar que el correo YA NO ESTÉ en la entrada de Luis, pero SÍ en sus Eliminados
+    expect(gestor.getEntrada('luis@mail.com')).toEqual([]);
+    expect(gestor.getEliminados('luis@mail.com')).toEqual([correo]);
+
+    // Verificar que el correo SIGA ESTANDO intacto en la Entrada de los demás destinatarios
+    expect(gestor.getEntrada('maria@mail.com')).toEqual([correo]);
+    expect(gestor.getEntrada('pedro@mail.com')).toEqual([correo]);
+
+    // Verificar que los demás no tengan nada en su bandeja de Eliminados
+    expect(gestor.getEliminados('maria@mail.com')).toEqual([]);
+    expect(gestor.getEliminados('pedro@mail.com')).toEqual([]);
+
+    // Verificar que la bandeja de Enviados del remitente (Ana) siga intacta
+    expect(gestor.getEnviados('ana@mail.com')).toEqual([correo]);
+  });
 
 });
 
