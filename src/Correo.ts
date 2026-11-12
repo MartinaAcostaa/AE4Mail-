@@ -75,9 +75,8 @@ public getLeido(emailUsuario?: string): boolean {
 
     const email = emailUsuario.trim().toLowerCase();
 
-    return this._lecturas.get(email) ?? false;
-}
-
+    return this._lecturas.get(email) ?? this._leido;
+  }
 // Marca el correo como leído
 public marcarComoLeido(emailUsuario?: string): void {
     if (!emailUsuario) {
@@ -125,14 +124,6 @@ public marcarComoNoLeido(emailUsuario?: string): void {
     this._destinatarios = [...nuevosDestinatarios]; //guarda una copia, igual que el constructor
   }
   
-  // metodos para cambiar el estado de lectura (RF-08)
-  public marcarComoLeido(): void {
-    this._leido = true; //el correo pasa a estar leido
-  }
-
-  public marcarComoNoLeido(): void {
-    this._leido = false; //el correo vuelve a estar sin leer
-  }
 
 
 }

@@ -82,4 +82,30 @@ describe("RF-08: Marcar correos como leidos o no leidos", () => {
     expect(filtros.aplicarFiltro('Pendientes de revision', gestor.getEntrada('luis@mail.com')))
         .toEqual([correo2]);
     });
+
+    it('RF-08: Cada destinatario debe tener su propio estado de lectura', () => {
+    const gestor = new GestorCorreos();
+
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const maria = new Contacto('Maria', 'maria@mail.com');
+
+    const correo = new Correo(
+        'Reunión',
+        'Nos reunimos mañana',
+        ana,
+        [luis, maria]
+    );
+
+    gestor.enviarCorreo(correo);
+
+    // Luis lee el correo
+    correo.marcarComoLeido('luis@mail.com');
+
+    // Luis ya no tiene ese correo entre sus no leídos
+    expect(gestor.getNoLeidosEntrada('luis@mail.com')).toEqual([]);
+
+    // María todavía lo tiene como no leído
+    expect(gestor.getNoLeidosEntrada('maria@mail.com')).toEqual([correo]);
+});
 });
