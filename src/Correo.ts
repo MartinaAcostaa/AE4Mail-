@@ -12,8 +12,8 @@ export class Correo implements ICorreo {
   private _destinatarios: IContacto[]; //lista de contactos a los que se les envia el correo
   //private readonly _fechaCreacion: Date;
 
-  private _leido: boolean; //estado de lectura
-  private _favorito: boolean; //si se marco como favorito
+private _leido: boolean; // mantiene compatibilidad con las operaciones anteriores
+private _lecturas: Map<string, boolean> = new Map();  private _favorito: boolean; //si se marco como favorito
 
 
   
@@ -67,9 +67,38 @@ export class Correo implements ICorreo {
     //asi quien llama al metodo no puede modificarlo directamente
   }
 
-  public getLeido(): boolean {
-    return this._leido;
-  }
+  // Obtiene el estado de lectura de un usuario determinado
+public getLeido(emailUsuario?: string): boolean {
+    if (!emailUsuario) {
+        return this._leido;
+    }
+
+    const email = emailUsuario.trim().toLowerCase();
+
+    return this._lecturas.get(email) ?? false;
+}
+
+// Marca el correo como leído
+public marcarComoLeido(emailUsuario?: string): void {
+    if (!emailUsuario) {
+        this._leido = true;
+        return;
+    }
+
+    const email = emailUsuario.trim().toLowerCase();
+    this._lecturas.set(email, true);
+}
+
+// Marca el correo como no leído
+public marcarComoNoLeido(emailUsuario?: string): void {
+    if (!emailUsuario) {
+        this._leido = false;
+        return;
+    }
+
+    const email = emailUsuario.trim().toLowerCase();
+    this._lecturas.set(email, false);
+}
 
   public getFavorito(): boolean {
     return this._favorito;
