@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { Correo } from '../src/Correo';
 import { Contacto } from '../src/Contacto';
 import { GestorCorreos } from '../src/GestorCorreos';
+import { GestorFiltros } from '../src/GestorFiltros';
+import { FiltroCorreo } from '../src/FiltroCorreo';
 
 describe("RF-08: Marcar correos como leidos o no leidos", () => {
 
@@ -52,5 +54,32 @@ describe("RF-08: Marcar correos como leidos o no leidos", () => {
     expect(gestor.getNoLeidosEntrada('luis@mail.com')).toEqual([correo1, correo3]);
     // la bandeja completa sigue teniendo los tres (no se modifico)
     expect(gestor.getEntrada('luis@mail.com')).toHaveLength(3);
+    });
+
+    it("marcar un correo como leido se refleja en el filtro de pendientes", () => {
+    // Luis recibe dos correos con "Entrega" en el contenido
+    const gestor = new GestorCorreos();
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const correo1 = new Correo('TP', 'Entrega del lunes', ana, [luis]);
+    const correo2 = new Correo('Final', 'Entrega del informe', ana, [luis]);
+    gestor.enviarCorreo(correo1);
+    gestor.enviarCorreo(correo2);
+
+    // filtro "Pendientes de revision": no leidos cuyo contenido incluya "Entrega"
+    const filtros = new GestorFiltros();
+    filtros.agregarFiltro(new FiltroCorreo('Pendientes de revision',
+        correo => !correo.getLeido() && correo.getContenido().includes('Entrega')));
+
+    // al principio los dos estan pendientes
+    expect(filtros.aplicarFiltro('Pendientes de revision', gestor.getEntrada('luis@mail.com')))
+        .toEqual([correo1, correo2]);
+
+    // Luis lee el primero
+    correo1.marcarComoLeido();
+
+    // al volver a aplicar el filtro, el primero ya no aparece
+    expect(filtros.aplicarFiltro('Pendientes de revision', gestor.getEntrada('luis@mail.com')))
+        .toEqual([correo2]);
     });
 });
