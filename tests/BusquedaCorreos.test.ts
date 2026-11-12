@@ -314,7 +314,29 @@ describe('RF4: Búsqueda de correos', () => {
 
         expect(bandeja).toHaveLength(1); // esperamos que la bandeja tenga 1 elemento
     });
+    
+    it('envia 100 correos y encuentra solo los que tienen 5 en el asunto', () => {
+    // 1. Ana le manda 100 correos a Luis, con asuntos "Correo 1" a "Correo 100"
+    const gestor = new GestorCorreos();
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    for (let numero = 1; numero <= 100; numero++) {
+        gestor.enviarCorreo(new Correo(`Correo ${numero}`, 'Contenido', ana, [luis]));
+    }
+    expect(gestor.getEntrada('luis@mail.com')).toHaveLength(100);
 
+    // 2. buscamos "5" en la Bandeja de Entrada de Luis
+    const resultado = gestor.buscarEnEntrada('luis@mail.com', '5');
 
-
+    // 3. comprobamos: los numeros del 1 al 100 que tienen un 5 son 19
+    // (5, 15, 25, 35, 45, del 50 al 59, 65, 75, 85 y 95)
+    expect(resultado).toHaveLength(19);
+    // todos los encontrados tienen un 5 en el asunto
+    expect(resultado.every(correo => correo.getAsunto().includes('5'))).toBe(true);
+    // y los que no se encontraron no lo tienen
+    const asuntosEncontrados = resultado.map(correo => correo.getAsunto());
+    expect(asuntosEncontrados).toContain('Correo 5');
+    expect(asuntosEncontrados).toContain('Correo 55');
+    expect(asuntosEncontrados).not.toContain('Correo 4');
+    });
 });

@@ -139,6 +139,10 @@ export class GestorCorreos {
         return this.getBandejaEntradaUsuario(emailUsuario).getCorreos();
     }
 
+    public getNoLeidosEntrada(emailUsuario: string): ICorreo[] { //no leidos de la Entrada de un usuario
+        return this.getBandejaEntradaUsuario(emailUsuario).getNoLeidos(); //le pide a la bandeja sus no leidos
+    }
+
     public getEnviados(emailUsuario: string): ICorreo[] {
         return this.getBandejaEnviadosUsuario(emailUsuario).getCorreos();
     }

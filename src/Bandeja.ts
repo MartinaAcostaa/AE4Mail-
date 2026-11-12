@@ -30,4 +30,8 @@ export abstract class Bandeja {
     public getCorreos(): ICorreo[] {
         return [...this._correos]; //devuelve una copia para que no se modifique la bandeja desde afuera
     }
+
+    public getNoLeidos(): ICorreo[] { //devuelve los correos de esta bandeja que todavia no se leyeron
+        return this._correos.filter(correo => !correo.getLeido()); //filter con un predicado: se queda con los no leidos
+    }
 }

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { BandejaEntrada } from '../src/BandejaEntrada';
 import { Correo } from '../src/Correo';
+import { GestorCorreos } from '../src/GestorCorreos';
 import { Contacto } from '../src/Contacto';
 import { BandejaEnviados } from '../src/BandejaEnviados';
 import { BandejaBorradores } from '../src/BandejaBorradores';
@@ -26,7 +27,7 @@ describe('RF-06: Bandejas', () => {
         expect(entrada.getCorreos()).toHaveLength(1);
     });
 
-    it ("no permite agregar un correo que ya esta en la bandeja", () => {
+    it ("no permite agregar un correo que ya esta en la bandeja", () => { //Mostrar este 
         // una bandeja que ya tiene el correo 
         const entrada = new BandejaEntrada()
         const ana = new Contacto('Ana', 'ana@mail.com')
@@ -76,7 +77,7 @@ describe('RF-06: Bandejas', () => {
         expect(entrada.getCorreos()).toEqual([guardado]);
     });
 
-    it ("la Bandeja de Enviados acepta correos completos y rechaza los incompletos" , () => {
+    it ("la Bandeja de Enviados acepta correos completos y rechaza los incompletos" , () => {  //MOSTRAR ESTE 
         //bandeja de enviados y un correo completo 
         const enviados = new BandejaEnviados()
         const ana = new Contacto('Ana', 'ana@mail.com')
@@ -113,7 +114,7 @@ describe('RF-06: Bandejas', () => {
         expect(enviados.getCorreos()).toEqual([correoCompleto]);
     });
 
-    it ("La Bandeja de Borradores acepta correos incompletos" , () => {
+    it ("La Bandeja de Borradores acepta correos incompletos" , () => {  //MOSTAR ESTE 
         // bandeja de borradores y un correo que le falta el asunto
         const borradores = new BandejaBorradores()
         const ana = new Contacto('Ana', 'ana@mail.com')
@@ -151,28 +152,29 @@ describe('RF-06: Bandejas', () => {
         expect(eliminados.getCorreos()).toEqual([correo]);
     });
 
-    it ("restaura un correo de Eliminados a su bandeja original" , () => {
-    // un correo de la Entrada y otro de Enviados, los dos eliminados
-    const entrada = new BandejaEntrada();
-    const enviados = new BandejaEnviados();
-    const eliminados = new BandejaEliminados();
+    it ("restaura un correo de Eliminados a su bandeja original" , () => { //MOSTRAR ESTE
+    // los correos llegan enviandolos: Ana le envia uno a Luis y Luis le envia otro a Ana
+    const gestor = new GestorCorreos();
     const ana = new Contacto('Ana', 'ana@mail.com');
     const luis = new Contacto('Luis', 'luis@mail.com');
     const recibido = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
     const enviado = new Correo('Proyecto', 'Te paso el informe', luis, [ana]);
-    entrada.agregarCorreo(recibido);
-    enviados.agregarCorreo(enviado);
-    eliminados.eliminarDesde(recibido, entrada);
-    eliminados.eliminarDesde(enviado, enviados);
+    gestor.enviarCorreo(recibido); // queda en la Entrada de Luis
+    gestor.enviarCorreo(enviado);  // queda en los Enviados de Luis
 
-    // restauramos los dos 
-    eliminados.restaurarCorreo(recibido);
-    eliminados.restaurarCorreo(enviado);
+    // Luis elimina los dos
+    gestor.eliminarCorreo(recibido, 'luis@mail.com');
+    gestor.eliminarCorreo(enviado, 'luis@mail.com');
+    expect(gestor.getEliminados('luis@mail.com')).toEqual([recibido, enviado]);
+
+    // restauramos los dos
+    gestor.restaurarCorreo(recibido, 'luis@mail.com');
+    gestor.restaurarCorreo(enviado, 'luis@mail.com');
 
     // comprobamos que ya no estan en Eliminados y si en sus bandejas originales
-    expect(entrada.getCorreos()).toEqual([recibido]);
-    expect(enviados.getCorreos()).toEqual([enviado]);
-    expect(eliminados.getCorreos()).toEqual([]);
+    expect(gestor.getEntrada('luis@mail.com')).toEqual([recibido]);
+    expect(gestor.getEnviados('luis@mail.com')).toEqual([enviado]);
+    expect(gestor.getEliminados('luis@mail.com')).toEqual([]);
     });
 
     it('no permite restaurar un correo que no esta en Eliminados', () => {
