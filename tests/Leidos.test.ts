@@ -10,7 +10,7 @@ describe("RF-08: Marcar correos como leidos o no leidos", () => {
         const ana = new Contacto('Ana', 'ana@mail.com');
         const luis = new Contacto('Luis', 'luis@mail.com');
         const correo = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
-        expect(correo.estaLeido()).toBe(false);
+        expect(correo.getLeido()).toBe(false);
 
         // lo marcamos como leido y despues otravez como no leido 
         correo.marcarComoLeido();
