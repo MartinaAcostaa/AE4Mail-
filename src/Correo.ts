@@ -95,6 +95,15 @@ export class Correo implements ICorreo {
     }
     this._destinatarios = [...nuevosDestinatarios]; //guarda una copia, igual que el constructor
   }
+  
+  // metodos para cambiar el estado de lectura (RF-08)
+  public marcarComoLeido(): void {
+    this._leido = true; //el correo pasa a estar leido
+  }
+
+  public marcarComoNoLeido(): void {
+    this._leido = false; //el correo vuelve a estar sin leer
+  }
 
 
 }
