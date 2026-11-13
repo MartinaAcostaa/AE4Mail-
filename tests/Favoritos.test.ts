@@ -73,6 +73,21 @@ describe('RF-09: Gestión de correos favoritos', () => {
         expect(gestor.getFavoritos('maria@mail.com')).toEqual([]);
     });
 
+    it('Marcar como favorito no mueve el correo de su bandeja', () => {
+        const gestor = new GestorCorreos();
+
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+
+        const correo = new Correo('Reunión', 'Contenido', ana, [luis]);
+
+        gestor.enviarCorreo(correo);
+        gestor.marcarComoFavorito(correo, 'luis@mail.com');
+
+        expect(gestor.getEntrada('luis@mail.com')).toContain(correo);
+        expect(gestor.getFavoritos('luis@mail.com')).toContain(correo);
+    });
+
 
 
    
