@@ -12,8 +12,10 @@ export class Correo implements ICorreo {
   private _destinatarios: IContacto[]; //lista de contactos a los que se les envia el correo
   //private readonly _fechaCreacion: Date;
 
+  private _favoritos: Map<string, boolean> = new Map();
+
 private _leido: boolean; // mantiene compatibilidad con las operaciones anteriores
-private _lecturas: Map<string, boolean> = new Map();  private _favorito: boolean; //si se marco como favorito
+private _lecturas: Map<string, boolean> = new Map();  
 
 
   
@@ -41,7 +43,6 @@ private _lecturas: Map<string, boolean> = new Map();  private _favorito: boolean
     //this._fechaCreacion = new Date();  //registra la fecha 
 
     this._leido = false; //todo correo nuevo esta no leido
-    this._favorito = false; //todo correo nuevo esta sin ser favorito
   }
 
   
@@ -99,9 +100,6 @@ public marcarComoNoLeido(emailUsuario?: string): void {
     this._lecturas.set(email, false);
 }
 
-  public getFavorito(): boolean {
-    return this._favorito;
-  }
 
 
   //public getFechaCreacion(): Date {

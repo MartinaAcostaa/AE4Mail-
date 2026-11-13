@@ -8,7 +8,6 @@ export interface ICorreo {
     getRemitente(): IContacto;
     getDestinatarios(): IContacto[];
     getLeido(emailUsuario?: string): boolean;    
-    getFavorito(): boolean;
 
     getRemitente(): IContacto;
 
@@ -18,6 +17,10 @@ export interface ICorreo {
     getLeido(emailUsuario?: string): boolean;
     marcarComoLeido(emailUsuario?: string): void;
     marcarComoNoLeido(emailUsuario?: string): void;
+
+    getFavorito(emailUsuario: string): boolean;
+    marcarComoFavorito(emailUsuario: string): void;
+    quitarComoFavorito(emailUsuario: string): void;
 
 
 }
