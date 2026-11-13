@@ -105,6 +105,26 @@ describe('RF-09: Gestión de correos favoritos', () => {
         expect(gestor.getFavoritos('luis@mail.com')).not.toContain(correo);
     });
 
+    it('No muestra duplicados si el correo aparece en más de una bandeja', () => {
+    const gestor = new GestorCorreos();
+
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    const correo = new Correo('Reunión', 'Contenido', ana, [luis]);
+
+    gestor.enviarCorreo(correo);
+
+    // El correo está en Enviados de Ana y en Entrada de Luis.
+    // Para comprobar duplicados dentro de la vista de un usuario,
+    // lo incorporamos también a otra bandeja activa de ese usuario.
+    gestor.recibirCorreo(correo, 'ana@mail.com');
+
+    gestor.marcarComoFavorito(correo, 'ana@mail.com');
+
+    expect(gestor.getFavoritos('ana@mail.com')).toEqual([correo]);
+});
+
 
 
    
