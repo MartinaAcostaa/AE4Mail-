@@ -250,6 +250,30 @@ public quitarComoFavorito(correo: ICorreo, emailUsuario: string): void {
     correo.quitarComoFavorito(email);
 }
 
+public getFavoritos(emailUsuario: string): ICorreo[] {
+    const email = emailUsuario.trim().toLowerCase();
+
+    if (!email) {
+        throw new Error('El email del usuario es obligatorio.');
+    }
+
+    const correos = [
+        ...this.getBandejaEntradaUsuario(email).getCorreos(),
+        ...this.getBandejaEnviadosUsuario(email).getCorreos(),
+        ...this.getBandejaBorradoresUsuario(email).getCorreos()
+    ];
+
+    const unicos = new Map<number, ICorreo>();
+
+    for (const correo of correos) {
+        if (correo.getFavorito(email)) {
+            unicos.set(correo.id, correo);
+        }
+    }
+
+    return [...unicos.values()];
+}
+
 
 
  
