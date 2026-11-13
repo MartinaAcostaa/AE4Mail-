@@ -139,8 +139,9 @@ export class GestorCorreos {
         return this.getBandejaEntradaUsuario(emailUsuario).getCorreos();
     }
 
-    public getNoLeidosEntrada(emailUsuario: string): ICorreo[] { //no leidos de la Entrada de un usuario
-        return this.getBandejaEntradaUsuario(emailUsuario).getNoLeidos(); //le pide a la bandeja sus no leidos
+    public getNoLeidosEntrada(emailUsuario: string): ICorreo[] {
+    return this.getBandejaEntradaUsuario(emailUsuario)
+        .getNoLeidos(emailUsuario);
     }
 
     public getEnviados(emailUsuario: string): ICorreo[] {
@@ -198,6 +199,83 @@ export class GestorCorreos {
     public buscarCorreos(correos: ICorreo[], texto: string): ICorreo[] {
         return this._buscador.buscarCorreos(correos, texto);
     }
+
+// ------------------------------------------------------------------------
+// Gestión de Favoritos por Usuario (RF-09)
+// ------------------------------------------------------------------------
+
+public marcarComoFavorito(correo: ICorreo, emailUsuario: string): void {
+    if (!correo) {
+        throw new Error('El correo es obligatorio.');
+    }
+
+    const email = emailUsuario.trim().toLowerCase();
+
+    if (!email) {
+        throw new Error('El email del usuario es obligatorio.');
+    }
+
+    const pertenece =
+        this.getBandejaEntradaUsuario(email).contieneCorreo(correo) ||
+        this.getBandejaEnviadosUsuario(email).contieneCorreo(correo) ||
+        this.getBandejaBorradoresUsuario(email).contieneCorreo(correo);
+
+    if (!pertenece) {
+        throw new Error('El correo no pertenece a ninguna bandeja activa del usuario.');
+    }
+
+    correo.marcarComoFavorito(email);
+}
+
+public quitarComoFavorito(correo: ICorreo, emailUsuario: string): void {
+    if (!correo) {
+        throw new Error('El correo es obligatorio.');
+    }
+
+    const email = emailUsuario.trim().toLowerCase();
+
+    if (!email) {
+        throw new Error('El email del usuario es obligatorio.');
+    }
+
+    const pertenece =
+        this.getBandejaEntradaUsuario(email).contieneCorreo(correo) ||
+        this.getBandejaEnviadosUsuario(email).contieneCorreo(correo) ||
+        this.getBandejaBorradoresUsuario(email).contieneCorreo(correo);
+
+    if (!pertenece) {
+        throw new Error('El correo no pertenece a ninguna bandeja activa del usuario.');
+    }
+
+    correo.quitarComoFavorito(email);
+}
+
+public getFavoritos(emailUsuario: string): ICorreo[] {
+    const email = emailUsuario.trim().toLowerCase();
+
+    if (!email) {
+        throw new Error('El email del usuario es obligatorio.');
+    }
+
+    const correos = [
+        ...this.getBandejaEntradaUsuario(email).getCorreos(),
+        ...this.getBandejaEnviadosUsuario(email).getCorreos(),
+        ...this.getBandejaBorradoresUsuario(email).getCorreos()
+    ];
+
+    const unicos = new Map<number, ICorreo>();
+
+    for (const correo of correos) {
+        if (correo.getFavorito(email)) {
+            unicos.set(correo.id, correo);
+        }
+    }
+
+    return [...unicos.values()];
+}
+
+
+
  
 
 }

@@ -7,10 +7,17 @@ export interface ICorreo {
     getContenido(): string;
     getRemitente(): IContacto;
     getDestinatarios(): IContacto[];
-    getLeido(): boolean;
-    getFavorito(): boolean;
+    getLeido(emailUsuario?: string): boolean;    
 
     getRemitente(): IContacto;
+
+
+    marcarComoLeido(emailUsuario?: string): void;
+    marcarComoNoLeido(emailUsuario?: string): void;
+
+    getFavorito(emailUsuario: string): boolean;
+    marcarComoFavorito(emailUsuario: string): void;
+    quitarComoFavorito(emailUsuario: string): void;
 
 
 }

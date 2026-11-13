@@ -93,7 +93,11 @@ describe('RF-06: Bandejas', () => {
             getRemitente: () => ana,
             getDestinatarios: () => [luis],
             getLeido: () => false,
-            getFavorito: () => false
+            getFavorito: () => false,
+            marcarComoLeido: () => {},
+            marcarComoNoLeido: () => {},
+            marcarComoFavorito: () => {},
+            quitarComoFavorito: () => {}
         };
 
         const correoSinDestinatarios: ICorreo = {
@@ -103,7 +107,11 @@ describe('RF-06: Bandejas', () => {
             getRemitente: () => ana,
             getDestinatarios: () => [],
             getLeido: () => false,
-            getFavorito: () => false
+            getFavorito: () => false,
+            marcarComoLeido: () => {},
+            marcarComoNoLeido: () => {},
+            marcarComoFavorito: () => {},
+            quitarComoFavorito: () => {}
         };
 
         // el completo se agrega , los incompletos lanzan error
@@ -126,6 +134,10 @@ describe('RF-06: Bandejas', () => {
         getDestinatarios: () => [],
         getLeido: () => false,
         getFavorito: () => false,
+            marcarComoLeido: () => {},
+            marcarComoNoLeido: () => {},
+            marcarComoFavorito: () => {},
+            quitarComoFavorito: () => {},
     };
 
     // lo guardamos como borrador 
@@ -245,7 +257,11 @@ it('getCorreos de Borradores devuelve una copia', () => {
         getRemitente: () => ana,
         getDestinatarios: () => [],
         getLeido: () => false,
-        getFavorito: () => false
+        getFavorito: () => false,
+            marcarComoLeido: () => {},
+            marcarComoNoLeido: () => {},
+            marcarComoFavorito: () => {},
+            quitarComoFavorito: () => {}
     };
 
     borradores.agregarCorreo(correo);
@@ -285,7 +301,11 @@ it('restaura un correo eliminado desde Borradores', () => {
         getRemitente: () => ana,
         getDestinatarios: () => [],
         getLeido: () => false,
-        getFavorito: () => false
+        getFavorito: () => false,
+            marcarComoLeido: () => {},
+            marcarComoNoLeido: () => {},
+            marcarComoFavorito: () => {},
+            quitarComoFavorito: () => {}
     };
 
     borradores.agregarCorreo(correo);
@@ -309,7 +329,11 @@ it('no permite agregar a Enviados un correo sin contenido', () => {
         getRemitente: () => ana,
         getDestinatarios: () => [luis],
         getLeido: () => false,
-        getFavorito: () => false
+        getFavorito: () => false,
+            marcarComoLeido: () => {},
+            marcarComoNoLeido: () => {},
+            marcarComoFavorito: () => {},
+            quitarComoFavorito: () => {}
     };
 
     expect(() => enviados.agregarCorreo(correoSinContenido)).toThrow();
@@ -327,7 +351,11 @@ it('no permite agregar a Enviados un correo sin remitente', () => {
         getRemitente: () => null as unknown as Contacto,
         getDestinatarios: () => [luis],
         getLeido: () => false,
-        getFavorito: () => false
+        getFavorito: () => false,
+            marcarComoLeido: () => {},
+            marcarComoNoLeido: () => {},
+            marcarComoFavorito: () => {},
+            quitarComoFavorito: () => {}
     };
 
     expect(() => enviados.agregarCorreo(correoSinRemitente)).toThrow();

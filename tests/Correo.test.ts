@@ -30,8 +30,7 @@ describe('RF-01: Creación de correos electrónicos', () => {
     );
 
     expect(correo.getLeido()).toBe(false);
-    expect(correo.getFavorito()).toBe(false);
-  });
+  expect(correo.getFavorito('luis@ejemplo.com')).toBe(false);  });
 
 
   it('rechaza crear un correo sin remitente o con destinatarios invalidos', () => {
