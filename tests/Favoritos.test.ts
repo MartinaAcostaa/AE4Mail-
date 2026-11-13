@@ -28,8 +28,30 @@ describe('RF-09: Gestión de correos favoritos', () => {
 
         expect(correo.getFavorito('luis@mail.com')).toBe(false);
     });
-
     
+
+    it('Permite consultar todos los correos favoritos', () => {
+        const gestor = new GestorCorreos();
+
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+
+        const correo1 = new Correo('Reunión', 'Contenido 1', ana, [luis]);
+        const correo2 = new Correo('Entrega', 'Contenido 2', ana, [luis]);
+
+        gestor.enviarCorreo(correo1);
+        gestor.enviarCorreo(correo2);
+
+        gestor.marcarComoFavorito(correo1, 'luis@mail.com');
+        gestor.marcarComoFavorito(correo2, 'luis@mail.com');
+
+        expect(gestor.getFavoritos('luis@mail.com')).toEqual([
+            correo1,
+            correo2
+        ]);
+    });
+
+
 
    
 });
