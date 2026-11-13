@@ -227,6 +227,30 @@ public marcarComoFavorito(correo: ICorreo, emailUsuario: string): void {
     correo.marcarComoFavorito(email);
 }
 
+public quitarComoFavorito(correo: ICorreo, emailUsuario: string): void {
+    if (!correo) {
+        throw new Error('El correo es obligatorio.');
+    }
+
+    const email = emailUsuario.trim().toLowerCase();
+
+    if (!email) {
+        throw new Error('El email del usuario es obligatorio.');
+    }
+
+    const pertenece =
+        this.getBandejaEntradaUsuario(email).contieneCorreo(correo) ||
+        this.getBandejaEnviadosUsuario(email).contieneCorreo(correo) ||
+        this.getBandejaBorradoresUsuario(email).contieneCorreo(correo);
+
+    if (!pertenece) {
+        throw new Error('El correo no pertenece a ninguna bandeja activa del usuario.');
+    }
+
+    correo.quitarComoFavorito(email);
+}
+
+
 
  
 
