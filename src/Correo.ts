@@ -101,11 +101,6 @@ public marcarComoNoLeido(emailUsuario?: string): void {
 }
 
 
-
-  //public getFechaCreacion(): Date {
-   // return new Date(this._fechaCreacion.getTime());
-  //}
-
   //metodos para editar un borrador (RF-07)
   public cambiarAsunto(nuevoAsunto: string): void {
     this._asunto = nuevoAsunto.trim(); //guarda el asunto sin espacios al inicio ni al final
@@ -121,6 +116,21 @@ public marcarComoNoLeido(emailUsuario?: string): void {
     }
     this._destinatarios = [...nuevosDestinatarios]; //guarda una copia, igual que el constructor
   }
+
+  public getFavorito(emailUsuario: string): boolean {
+    const email = emailUsuario.trim().toLowerCase();
+    return this._favoritos.get(email) ?? false;
+}
+
+public marcarComoFavorito(emailUsuario: string): void {
+    const email = emailUsuario.trim().toLowerCase();
+    this._favoritos.set(email, true);
+}
+
+public quitarComoFavorito(emailUsuario: string): void {
+    const email = emailUsuario.trim().toLowerCase();
+    this._favoritos.set(email, false);
+}
   
 
 
