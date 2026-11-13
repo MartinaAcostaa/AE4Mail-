@@ -88,6 +88,23 @@ describe('RF-09: Gestión de correos favoritos', () => {
         expect(gestor.getFavoritos('luis@mail.com')).toContain(correo);
     });
 
+      it('No muestra correos eliminados en la vista de favoritos', () => {
+        const gestor = new GestorCorreos();
+
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+
+        const correo = new Correo('Reunión', 'Contenido', ana, [luis]);
+
+        gestor.enviarCorreo(correo);
+        gestor.marcarComoFavorito(correo, 'luis@mail.com');
+
+        gestor.eliminarCorreo(correo, 'luis@mail.com');
+
+        expect(gestor.getEliminados('luis@mail.com')).toContain(correo);
+        expect(gestor.getFavoritos('luis@mail.com')).not.toContain(correo);
+    });
+
 
 
    
