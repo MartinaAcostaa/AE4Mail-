@@ -15,5 +15,9 @@ export interface ICorreo {
     marcarComoLeido(emailUsuario?: string): void;
     marcarComoNoLeido(emailUsuario?: string): void;
 
+    getLeido(emailUsuario?: string): boolean;
+    marcarComoLeido(emailUsuario?: string): void;
+    marcarComoNoLeido(emailUsuario?: string): void;
+
 
 }
