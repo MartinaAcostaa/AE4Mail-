@@ -51,6 +51,28 @@ describe('RF-09: Gestión de correos favoritos', () => {
         ]);
     });
 
+     it('Los favoritos son independientes para cada usuario', () => {
+        const gestor = new GestorCorreos();
+
+        const ana = new Contacto('Ana', 'ana@mail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+        const maria = new Contacto('Maria', 'maria@mail.com');
+
+        const correo = new Correo(
+            'Reunión',
+            'Nos reunimos mañana',
+            ana,
+            [luis, maria]
+        );
+
+        gestor.enviarCorreo(correo);
+
+        gestor.marcarComoFavorito(correo, 'luis@mail.com');
+
+        expect(gestor.getFavoritos('luis@mail.com')).toEqual([correo]);
+        expect(gestor.getFavoritos('maria@mail.com')).toEqual([]);
+    });
+
 
 
    
