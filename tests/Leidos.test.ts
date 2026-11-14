@@ -28,10 +28,11 @@ describe("RF-08: Marcar correos como leidos o no leidos", () => {
         gestor.enviarCorreo(correo);
         
         // luis lo lee 
-        correo.marcarComoLeido();
+        correo.marcarComoLeido('luis@mail.com');
 
         // cuando luis consulta su bandeja de entrada, el correo sigue marcado como leido
-        expect(gestor.getEntrada('luis@mail.com')[0].getLeido()).toBe(true);    
+        expect(gestor.getEntrada('luis@mail.com')[0]
+        .getLeido('luis@mail.com')).toBe(true);
     });
 
     it("obtiene los correos no leidos de la Bandeja de Entrada de un usuario", () => {
@@ -47,7 +48,7 @@ describe("RF-08: Marcar correos como leidos o no leidos", () => {
     gestor.enviarCorreo(correo3);
 
     // Luis lee solo el segundo
-    correo2.marcarComoLeido();
+    correo2.marcarComoLeido('luis@mail.com');
 
     // Comprobamos que los no leidos son el primero y el tercero
     expect(gestor.getNoLeidosEntrada('luis@mail.com')).toEqual([correo1, correo3]);
@@ -67,16 +68,18 @@ describe("RF-08: Marcar correos como leidos o no leidos", () => {
 
     // filtro "Pendientes de revision": no leidos cuyo contenido incluya "Entrega"
     const filtros = new GestorFiltros();
-    filtros.agregarFiltro(new FiltroCorreo('Pendientes de revision',
-        correo => !correo.getLeido() && correo.getContenido().includes('Entrega')));
+    filtros.agregarFiltro(new FiltroCorreo(
+        'Pendientes de revision',
+        correo => !correo.getLeido('luis@mail.com') &&
+            correo.getContenido().includes('Entrega')
+    ));
 
     // al principio los dos estan pendientes
     expect(filtros.aplicarFiltro('Pendientes de revision', gestor.getEntrada('luis@mail.com')))
         .toEqual([correo1, correo2]);
 
     // Luis lee el primero
-    correo1.marcarComoLeido();
-
+    correo1.marcarComoLeido('luis@mail.com');
     // al volver a aplicar el filtro, el primero ya no aparece
     expect(filtros.aplicarFiltro('Pendientes de revision', gestor.getEntrada('luis@mail.com')))
         .toEqual([correo2]);
