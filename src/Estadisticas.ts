@@ -10,4 +10,11 @@ export class Estadisticas {
     public filtrarCorreos(correos: ICorreo[], condicion: (correo: ICorreo) => boolean): ICorreo[] { //recibe la condicion como funcion
         return correos.filter(condicion); //filter: se queda solo con los correos para los que la condicion da true
     }
+    
+    public contarNoLeidos(correos: ICorreo[], emailUsuario: string): number { //cuantos correos no leyo ese usuario
+        return correos.reduce(
+            (total, correo) => correo.getLeido(emailUsuario) ? total : total + 1, //si no esta leido, suma 1
+            0 //valor inicial del total
+        );
+    }
 }
