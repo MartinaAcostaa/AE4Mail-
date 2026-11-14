@@ -29,4 +29,30 @@ describe("RF-10: Procesamiento funcional y estadísticas", () => {
     expect(estadisticas.obtenerAsuntos([])).toEqual([]);
     });
 
+    it("obtiene los correos que cumplen una condicion con filter", () => {
+        // Luis recibe correos de la profesora (UCP) y de una amiga
+        const gestor = new GestorCorreos();
+        const profe = new Contacto('Profe', 'profe@ucp.com');
+        const sol = new Contacto('Sol', 'sol@gmail.com');
+        const luis = new Contacto('Luis', 'luis@mail.com');
+        const examen = new Correo('Examen final', 'El lunes a las 9', profe, [luis]);
+        const salida = new Correo('Salida', 'Vamos al cine?', sol, [luis]);
+        const aviso = new Correo('Aviso', 'No hay clases', profe, [luis]);
+        gestor.enviarCorreo(examen);
+        gestor.enviarCorreo(salida);
+        gestor.enviarCorreo(aviso);
+        const estadisticas = new Estadisticas();    
+
+        // pedimos los correos cuyo remitente es de la UCP
+        const deUCP = estadisticas.filtrarCorreos(
+            gestor.getEntrada('luis@mail.com'),
+            correo => correo.getRemitente().getEmail().endsWith('@ucp.edu.ar')
+        );
+
+        // comprobamos que son los dos de la profesora y la bandeja no cambio 
+        expect(deUcp).toEqual([examen, aviso]);
+        expect(gestor.getEntrada('luis@mail.com')).toHaveLength(3);
+    });
+
+
 });
