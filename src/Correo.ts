@@ -69,17 +69,26 @@ private _lecturas: Map<string, boolean> = new Map();
     //asi quien llama al metodo no puede modificarlo directamente
   }
 
-  // Obtiene el estado de lectura de un usuario determinado
-public getLeido(emailUsuario?: string): boolean {
-    if (!emailUsuario) {
-        return this._leido;
-    }
+  // Obsoleto: Obtiene el estado de lectura de un usuario determinado
+//public getLeido(emailUsuario?: string): boolean {
+    //if (!emailUsuario) {
+    //    return this._leido;
+   // }
 
+   // const email = emailUsuario.trim().toLowerCase();
+
+   // return this._lecturas.get(email) ?? this._leido;
+ // }
+// Marca el correo como leído
+
+// Obtiene el estado de lectura de un usuario determinado
+public getLeido(emailUsuario: string): boolean {
     const email = emailUsuario.trim().toLowerCase();
 
-    return this._lecturas.get(email) ?? this._leido;
-  }
-// Marca el correo como leído
+    return this._lecturas.get(email) ?? false;
+}
+
+
 public marcarComoLeido(emailUsuario?: string): void {
     if (!emailUsuario) {
         this._leido = true;
