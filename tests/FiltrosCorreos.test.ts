@@ -179,7 +179,7 @@ describe('RF5: Creación y aplicación de filtros personalizados', () => {
         const filtro = new FiltroCorreo(
             'Entregas pendientes',
             correo =>
-                !correo.getLeido() &&
+                !correo.getLeido('destino@mail.com') &&
                 correo.getContenido().toLowerCase().includes('entrega')
         );
 
