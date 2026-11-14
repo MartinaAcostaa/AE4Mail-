@@ -106,16 +106,23 @@ public marcarComoLeido(emailUsuario: string): void {
   //  this._lecturas.set(email, true);
 //}
 
-// Marca el correo como no leído
-public marcarComoNoLeido(emailUsuario?: string): void {
-    if (!emailUsuario) {
-        this._leido = false;
-        return;
-    }
-
+// Marca el correo como no leído para un usuario
+public marcarComoNoLeido(emailUsuario: string): void {
     const email = emailUsuario.trim().toLowerCase();
+
     this._lecturas.set(email, false);
 }
+
+// obsoleto: Marca el correo como no leído
+//public marcarComoNoLeido(emailUsuario?: string): void {
+//    if (!emailUsuario) {
+//        this._leido = false;
+//        return;
+//    }
+
+//    const email = emailUsuario.trim().toLowerCase();
+//    this._lecturas.set(email, false);
+//}
 
 
   //metodos para editar un borrador (RF-07)
