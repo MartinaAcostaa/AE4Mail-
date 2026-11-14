@@ -29,7 +29,7 @@ describe('RF-01: Creación de correos electrónicos', () => {
       [luis]
     );
 
-    expect(correo.getLeido()).toBe(false);
+    expect(correo.getLeido('luis@ejemplo.com')).toBe(false);
   expect(correo.getFavorito('luis@ejemplo.com')).toBe(false);  });
 
 

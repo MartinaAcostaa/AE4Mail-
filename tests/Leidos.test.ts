@@ -12,13 +12,12 @@ describe("RF-08: Marcar correos como leidos o no leidos", () => {
         const ana = new Contacto('Ana', 'ana@mail.com');
         const luis = new Contacto('Luis', 'luis@mail.com');
         const correo = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis]);
-        expect(correo.getLeido()).toBe(false);
-
+        expect(correo.getLeido('luis@mail.com')).toBe(false);
         // lo marcamos como leido y despues otravez como no leido 
-        correo.marcarComoLeido();
-        expect(correo.getLeido()).toBe(true);
-        correo.marcarComoNoLeido();
-        expect(correo.getLeido()).toBe(false);
+        correo.marcarComoLeido('luis@mail.com');
+        expect(correo.getLeido('luis@mail.com')).toBe(true);
+        correo.marcarComoNoLeido('luis@mail.com');
+        expect(correo.getLeido('luis@mail.com')).toBe(false);
     });
 
     it("El estado de leido se mantiene al consultar la bandeja", () => {
