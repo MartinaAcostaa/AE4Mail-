@@ -32,7 +32,7 @@ describe("RF-10: Procesamiento funcional y estadísticas", () => {
     it("obtiene los correos que cumplen una condicion con filter", () => {
         // Luis recibe correos de la profesora (UCP) y de una amiga
         const gestor = new GestorCorreos();
-        const profe = new Contacto('Profe', 'profe@ucp.com');
+        const profe = new Contacto('Profe', 'profe@ucp.edu.ar');
         const sol = new Contacto('Sol', 'sol@gmail.com');
         const luis = new Contacto('Luis', 'luis@mail.com');
         const examen = new Correo('Examen final', 'El lunes a las 9', profe, [luis]);
@@ -50,9 +50,7 @@ describe("RF-10: Procesamiento funcional y estadísticas", () => {
         );
 
         // comprobamos que son los dos de la profesora y la bandeja no cambio 
-        expect(deUcp).toEqual([examen, aviso]);
+        expect(deUCP).toEqual([examen, aviso]);
         expect(gestor.getEntrada('luis@mail.com')).toHaveLength(3);
     });
-
-
 });
