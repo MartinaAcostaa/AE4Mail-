@@ -14,9 +14,9 @@ export class Correo implements ICorreo {
 
   private _favoritos: Map<string, boolean> = new Map();
 
-private _leido: boolean; // mantiene compatibilidad con las operaciones anteriores
-private _lecturas: Map<string, boolean> = new Map();  
-
+//private _leido: boolean; // mantiene compatibilidad con las operaciones anteriores
+//private _lecturas: Map<string, boolean> = new Map();  
+private _lecturas: Map<string, boolean> = new Map();
 
   
  constructor( //recibe asunt, contenido, remitente y destinatarios
@@ -42,7 +42,8 @@ private _lecturas: Map<string, boolean> = new Map();
     this._destinatarios = [...destinatarios]; //creamos una copia del arreglo destinatarios para evitar que haya cabios en el arreglo original
     //this._fechaCreacion = new Date();  //registra la fecha 
 
-    this._leido = false; //todo correo nuevo esta no leido
+    //this._leido = false; //todo correo nuevo esta no leido
+    
   }
 
   
