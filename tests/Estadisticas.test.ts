@@ -53,4 +53,30 @@ describe("RF-10: Procesamiento funcional y estadísticas", () => {
         expect(deUCP).toEqual([examen, aviso]);
         expect(gestor.getEntrada('luis@mail.com')).toHaveLength(3);
     });
+
+    it("cuenta los correos no leidos de un usuario con reduce", () => {
+    // Ana les envia tres correos a Luis y a Maria
+    const gestor = new GestorCorreos();
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const maria = new Contacto('Maria', 'maria@mail.com');
+    const correo1 = new Correo('Reunion', 'Nos vemos el lunes', ana, [luis, maria]);
+    const correo2 = new Correo('Proyecto', 'Te paso el informe', ana, [luis, maria]);
+    const correo3 = new Correo('Examen', 'Estudiar el tema 3', ana, [luis, maria]);
+    gestor.enviarCorreo(correo1);
+    gestor.enviarCorreo(correo2);
+    gestor.enviarCorreo(correo3);
+    const estadisticas = new Estadisticas();
+
+    // Luis lee el primero (Maria no lee ninguno)
+    correo1.marcarComoLeido('luis@mail.com');
+
+    // Luis tiene 2 sin leer y Maria tiene los 3
+    expect(estadisticas.contarNoLeidos(gestor.getEntrada('luis@mail.com'), 'luis@mail.com')).toBe(2);
+    expect(estadisticas.contarNoLeidos(gestor.getEntrada('maria@mail.com'), 'maria@mail.com')).toBe(3);
+    // con una bandeja vacia el total es 0
+    expect(estadisticas.contarNoLeidos([], 'luis@mail.com')).toBe(0);
+    });
+
+
 });
