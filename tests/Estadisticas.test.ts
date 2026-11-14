@@ -78,5 +78,25 @@ describe("RF-10: Procesamiento funcional y estadísticas", () => {
     expect(estadisticas.contarNoLeidos([], 'luis@mail.com')).toBe(0);
     });
 
+    it("cuenta cuantos correos envio cada remitente con reduce", () => {
+        // Luis recibe dos correo de la profesora y uno de sol 
+    const gestor = new GestorCorreos();
+    const profe = new Contacto('Profe', 'profe@ucp.edu.ar');
+    const sol = new Contacto('Sol', 'sol@gmail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    gestor.enviarCorreo(new Correo('Examen final', 'El lunes a las 9', profe, [luis]));
+    gestor.enviarCorreo(new Correo('Salida', 'Vamos al cine?', sol, [luis]));
+    gestor.enviarCorreo(new Correo('Aviso', 'No hay clases', profe, [luis]));
+    const estadisticas = new Estadisticas();
+
+    //contamos los correos de la entrada de Luis por remitente
+    const porRemitente = estadisticas.contarPorRemitente(gestor.getEntrada('luis@mail.com'));
+
+    // comprobamos que la profesora envio 2 y Sol 1
+    expect(porRemitente.get('profe@ucp.edu.ar')).toBe(2);
+    expect(porRemitente.get('sol@gmail.com')).toBe(1);
+    expect(porRemitente.size).toBe(2); //solo hay dos remitentes distintos
+    });
+
 
 });
