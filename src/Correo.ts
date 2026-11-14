@@ -88,16 +88,23 @@ public getLeido(emailUsuario: string): boolean {
     return this._lecturas.get(email) ?? false;
 }
 
-
-public marcarComoLeido(emailUsuario?: string): void {
-    if (!emailUsuario) {
-        this._leido = true;
-        return;
-    }
-
+// Marca el correo como leído para un usuario
+public marcarComoLeido(emailUsuario: string): void {
     const email = emailUsuario.trim().toLowerCase();
+
     this._lecturas.set(email, true);
 }
+
+//obsoleto
+//public marcarComoLeido(emailUsuario?: string): void {
+ //   if (!emailUsuario) {
+  //      this._leido = true;
+ //       return;
+  //  }
+
+   // const email = emailUsuario.trim().toLowerCase();
+  //  this._lecturas.set(email, true);
+//}
 
 // Marca el correo como no leído
 public marcarComoNoLeido(emailUsuario?: string): void {
