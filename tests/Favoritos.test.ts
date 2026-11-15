@@ -183,6 +183,41 @@ it('Permite combinar filtros para buscar dentro de los favoritos', () => {
 });
 
 
+it('Al restaurar un correo eliminado, conserva su condición de favorito', () => {
+    const gestor = new GestorCorreos(); //se crea un nuevo gestor
+
+    // se crean dos contactos
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    const correo = new Correo(
+        'Proyecto AE4',
+        'Contenido',
+        ana,
+        [luis]
+    );
+
+    gestor.enviarCorreo(correo); //se envia el correo
+
+    // Marcamos el correo como favorito.
+    gestor.marcarComoFavorito(correo, 'luis@mail.com');
+
+    // Lo eliminamos.
+    gestor.eliminarCorreo(correo, 'luis@mail.com');
+
+    // No debe aparecer en favoritos mientras esté eliminado.
+    expect(gestor.getFavoritos('luis@mail.com')).not.toContain(correo);
+
+    // Lo restauramos.
+    gestor.restaurarCorreo(correo, 'luis@mail.com');
+
+    // Debe seguir siendo favorito y volver a aparecer en la vista.
+    expect(correo.getFavorito('luis@mail.com')).toBe(true);
+    expect(gestor.getFavoritos('luis@mail.com')).toContain(correo);
+});
+
+
+
 
 
    
