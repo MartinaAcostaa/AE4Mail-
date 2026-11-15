@@ -413,4 +413,42 @@ it('RF5: Los cambios en un correo se reflejan al volver a aplicar el filtro', ()
     expect(() => new FiltroCorreo('Filtro', 'no es una funcion' as unknown as (correo: ICorreo) => boolean))
         .toThrow('La condición debe ser una función.');
     });
+
+
+it('RF5: Debe combinar predicados mediante AND, OR y NOT', () => {
+
+    const gestor = new GestorFiltros();
+
+    const esProyecto = (correo: ICorreo) =>
+        correo.getAsunto().toLowerCase().includes('proyecto');
+
+    const esReunion = (correo: ICorreo) =>
+        correo.getAsunto().toLowerCase().includes('reunión');
+
+    const estaLeido = (correo: ICorreo) =>
+        correo.getLeido('destino@mail.com');
+
+    // Proyecto o reunión, pero que no esté leído.
+    const condicion = gestor.AND(
+        gestor.OR(esProyecto, esReunion),
+        gestor.NOT(estaLeido)
+    );
+
+    const filtro = new FiltroCorreo('Seguimiento pendiente', condicion);
+    gestor.agregarFiltro(filtro);
+
+    const correo1 = crearCorreo('Proyecto AE4', 'Contenido', 'ana@mail.com');
+    const correo2 = crearCorreo('Reunión', 'Contenido', 'juan@mail.com');
+    const correo3 = crearCorreo('Examen', 'Contenido', 'maria@mail.com');
+
+    correo2.marcarComoLeido('destino@mail.com');
+
+    const resultado = gestor.aplicarFiltro(
+        'Seguimiento pendiente',
+        [correo1, correo2, correo3]
+    );
+
+    expect(resultado).toEqual([correo1]);
+});
+
 });
