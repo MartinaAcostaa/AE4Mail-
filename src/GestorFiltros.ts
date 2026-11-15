@@ -54,5 +54,28 @@ export class GestorFiltros {
     }
 
 
+    // Combina dos condiciones: ambas deben cumplirse.
+    public AND(
+        condicion1: (correo: ICorreo) => boolean,
+        condicion2: (correo: ICorreo) => boolean
+    ): (correo: ICorreo) => boolean {
+        return correo => condicion1(correo) && condicion2(correo);
+    }
+
+    // Combina dos condiciones: al menos una debe cumplirse.
+    public OR(
+        condicion1: (correo: ICorreo) => boolean,
+        condicion2: (correo: ICorreo) => boolean
+    ): (correo: ICorreo) => boolean {
+        return correo => condicion1(correo) || condicion2(correo);
+    }
+
+    // Invierte el resultado de una condición.
+    public NOT(
+        condicion: (correo: ICorreo) => boolean
+    ): (correo: ICorreo) => boolean {
+        return correo => !condicion(correo);
+    }
+
     
 }
