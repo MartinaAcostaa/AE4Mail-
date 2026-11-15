@@ -3,6 +3,9 @@ import { Correo } from '../src/Correo';
 import { Contacto } from '../src/Contacto';
 import { GestorCorreos } from '../src/GestorCorreos';
 
+import { GestorFiltros } from '../src/GestorFiltros';
+import { FiltroCorreo } from '../src/FiltroCorreo';
+
 describe('RF-09: Gestión de correos favoritos', () => {
 
     it('Permite marcar y desmarcar un correo como favorito', () => {
@@ -124,6 +127,61 @@ describe('RF-09: Gestión de correos favoritos', () => {
 
     expect(gestor.getFavoritos('ana@mail.com')).toEqual([correo]);
 });
+
+
+it('Permite combinar filtros para buscar dentro de los favoritos', () => {
+    const gestor = new GestorCorreos();
+    const gestorFiltros = new GestorFiltros();
+
+    const ana = new Contacto('Ana', 'ana@ucp.edu.ar');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const juan = new Contacto('Juan', 'juan@gmail.com');
+
+    const correo1 = new Correo('Proyecto AE4', 'Contenido', ana, [luis]);
+    const correo2 = new Correo('Examen Física', 'Contenido', ana, [luis]);
+    const correo3 = new Correo('Proyecto final', 'Contenido', juan, [luis]);
+
+    gestor.enviarCorreo(correo1);
+    gestor.enviarCorreo(correo2);
+    gestor.enviarCorreo(correo3);
+
+    // Marcamos los tres correos como favoritos de Luis.
+    gestor.marcarComoFavorito(correo1, 'luis@mail.com');
+    gestor.marcarComoFavorito(correo2, 'luis@mail.com');
+    gestor.marcarComoFavorito(correo3, 'luis@mail.com');
+
+    // Creamos dos filtros independientes.
+    const filtroUCP = new FiltroCorreo(
+        'Remitentes UCP',
+        correo => correo.getRemitente().getEmail().endsWith('@ucp.edu.ar')
+    );
+
+    const filtroProyecto = new FiltroCorreo(
+        'Asunto Proyecto',
+        correo => correo.getAsunto().toLowerCase().includes('proyecto')
+    );
+
+    gestorFiltros.agregarFiltro(filtroUCP);
+    gestorFiltros.agregarFiltro(filtroProyecto);
+
+    // Obtenemos primero la colección de favoritos.
+    const favoritos = gestor.getFavoritos('luis@mail.com');
+
+    // Aplicamos ambos filtros sobre esa colección.
+    const resultadoUCP = gestorFiltros.aplicarFiltro(
+        'Remitentes UCP',
+        favoritos
+    );
+
+    const resultadoFinal = gestorFiltros.aplicarFiltro(
+        'Asunto Proyecto',
+        resultadoUCP
+    );
+
+    // Solo el primer correo cumple ambas condiciones.
+    expect(resultadoFinal).toEqual([correo1]);
+});
+
 
 
 
