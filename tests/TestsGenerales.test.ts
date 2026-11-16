@@ -3,9 +3,16 @@ import { describe, it, expect } from 'vitest';
 import { Contacto } from '../src/Contacto';
 import { Correo } from '../src/Correo';
 
+import { GestorCorreos } from '../src/GestorCorreos';
+import { GestorContactos } from '../src/GestorContactos';
+import { GestorFiltros } from '../src/GestorFiltros';
+import { FiltroCorreo } from '../src/FiltroCorreo';
+import { Estadisticas } from '../src/Estadisticas';
+import { ICorreo } from '../src/ICorreo';
+
 describe('Pruebas generales de integración del Gestor de Correos', () => {
-    // RF-01: Creación de correos electrónicos
-    it('RF-01: Permite crear correos y conservar correctamente sus datos', () => {
+    // RF 01: Creación de correos electrónicos
+    it('RF 01: Permite crear correos y conservar correctamente sus datos', () => {
 
         //se crean 3 contactos
         const ana = new Contacto('Ana', 'ana@mail.com');
@@ -37,6 +44,93 @@ describe('Pruebas generales de integración del Gestor de Correos', () => {
         expect(correo1.getLeido('luis@mail.com')).toBe(false);  // Verificamos que inicialmente el correo no esté leído por Luis
         expect(correo1.getFavorito('luis@mail.com')).toBe(false); // Verificamos que inicialmente tampoco sea favorito para Luis
     });
+
+    // RF 02: Envío de correos electrónicos
+it('RF 02: Permite enviar un correo a varios destinatarios y almacenarlo en las bandejas correspondientes', () => {
+
+    // creamos el gestor que administra los correos y las bandejas
+    const gestor = new GestorCorreos();
+
+    // Creamos los contactos que participarán en el envío
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+    const maria = new Contacto('Maria', 'maria@mail.com');
+
+    // Creamos un correo enviado por Ana a Luis y María
+    const correo = new Correo(
+        'Comunicado',
+        'Reunión mañana a las 10',
+        ana,
+        [luis, maria]
+    );
+
+    // enviamos el correo utilizando el gestor
+    gestor.enviarCorreo(correo);
+
+    // verificamos que el correo aparezca en Enviados de Ana
+    expect(gestor.getEnviados('ana@mail.com')).toEqual([correo]);
+
+    // Comprobamos que aparezca en la bandeja de entrada de Luis
+    expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
+
+    // Comprobamos que también aparezca en la entrada de María
+    expect(gestor.getEntrada('maria@mail.com')).toEqual([correo]);
+
+    // Verificamos que no se permita enviar nuevamente el mismo correo
+    expect(() => gestor.enviarCorreo(correo))
+        .toThrow('Este correo ya fue enviado.');
+});
+
+// RF 03: Gestión de contactos
+it('RF 03: Permite administrar contactos sin perder las referencias históricas de los correos', () => {
+
+    // creamos el gestor de contactos.
+    const agenda = new GestorContactos();
+
+    // Creamos dos contactos.
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    // agregamos ambos contactos a la agenda.
+    agenda.agregarContacto(ana);
+    agenda.agregarContacto(luis);
+
+    // Creamos un correo que utiliza esos contactos.
+    const correo = new Correo(
+        'Proyecto',
+        'Información del trabajo',
+        ana,
+        [luis]
+    );
+
+    // Modificamos los datos de Ana en la agenda.
+    agenda.modificarContacto(
+        'ana@mail.com',
+        'Ana Gomez',
+        'ana.gomez@mail.com'
+    );
+
+    // Comprobamos que ahora se pueda encontrar a Ana
+    // utilizando su nueva dirección de correo.
+    expect(agenda.buscarContactoPorEmail('ana.gomez@mail.com'))
+        .toBe(ana);
+
+    // Eliminamos a Ana de la agenda.
+    agenda.eliminarContacto('ana.gomez@mail.com');
+
+    // Comprobamos que ya no esté registrada en la agenda.
+    expect(agenda.buscarContactoPorEmail('ana.gomez@mail.com'))
+        .toBeUndefined();
+
+    // ASSERT: comprobamos que el correo conserve sus referencias.
+    // Aunque Ana fue eliminada de la agenda, sigue siendo su remitente.
+    expect(correo.getRemitente()).toBe(ana);
+
+    // Luis continúa siendo el destinatario del correo.
+    expect(correo.getDestinatarios()).toEqual([luis]);
+});
+
+
 
 
 });
