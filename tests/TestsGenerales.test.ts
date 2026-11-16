@@ -261,6 +261,46 @@ it('RF 05: Permite combinar predicados y aplicar filtros dinámicos sobre una co
     expect(resultadoActualizado).toEqual([correo2, correo3]);
 });
 
+// RF 06: Gestión de bandejas
+it('RF 06: Permite eliminar y restaurar un correo en su bandeja original', () => {
+
+    // creamos el gestor de correos.
+    const gestor = new GestorCorreos();
+
+    // Creamos los contactos.
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    // Creamos un correo enviado por Ana a Luis.
+    const correo = new Correo(
+        'Reunión',
+        'Nos reunimos mañana',
+        ana,
+        [luis]
+    );
+
+    // Enviamos el correo.
+    gestor.enviarCorreo(correo);
+
+    // eliminamos el correo de la bandeja de entrada de Luis.
+    gestor.eliminarCorreo(correo, 'luis@mail.com');
+
+    // ASSERT: comprobamos que ya no esté en la entrada de Luis.
+    expect(gestor.getEntrada('luis@mail.com')).toEqual([]);
+
+    // Comprobamos que ahora esté en la bandeja de eliminados.
+    expect(gestor.getEliminados('luis@mail.com')).toEqual([correo]);
+
+    // restauramos el correo.
+    gestor.restaurarCorreo(correo, 'luis@mail.com');
+
+    // comprobamos que vuelva a la bandeja de entrada.
+    expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
+
+    // Verificamos que ya no aparezca en eliminados.
+    expect(gestor.getEliminados('luis@mail.com')).toEqual([]);
+});
+
 
 
 
