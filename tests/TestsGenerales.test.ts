@@ -169,6 +169,98 @@ it('RF 04: Permite buscar correos recibidos por diferentes campos sin generar du
     expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
 });
 
+// RF 05: Filtros personalizados
+it('RF 05: Permite combinar predicados y aplicar filtros dinámicos sobre una colección', () => {
+
+    // creamos el gestor de correos y el gestor de filtros.
+    const gestor = new GestorCorreos();
+    const gestorFiltros = new GestorFiltros();
+
+    // Creamos los contactos.
+    const ana = new Contacto('Ana', 'ana@ucp.edu.ar');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    // Creamos tres correos diferentes.
+    const correo1 = new Correo(
+        'Proyecto AE4',
+        'Entrega del trabajo',
+        ana,
+        [luis]
+    );
+
+    const correo2 = new Correo(
+        'Reunión',
+        'Revisar pendientes',
+        ana,
+        [luis]
+    );
+
+    const correo3 = new Correo(
+        'Proyecto final',
+        'Entrega definitiva',
+        ana,
+        [luis]
+    );
+
+    // Enviamos los tres correos.
+    gestor.enviarCorreo(correo1);
+    gestor.enviarCorreo(correo2);
+    gestor.enviarCorreo(correo3);
+
+    // Definimos un predicado que verifica si el asunto
+    // contiene la palabra "proyecto".
+    const esProyecto = (correo: ICorreo) =>
+        correo.getAsunto().toLowerCase().includes('proyecto');
+
+    // Definimos otro predicado que verifica si el asunto
+    // contiene la palabra "reunión".
+    const esReunion = (correo: ICorreo) =>
+        correo.getAsunto().toLowerCase().includes('reunión');
+
+    // Este predicado comprueba si el correo está leído por Luis.
+    const estaLeido = (correo: ICorreo) =>
+        correo.getLeido('luis@mail.com');
+
+    // Combinamos los predicados:
+    // 1 - Debe ser un proyecto O una reunión.
+    // 2 - Además, NO debe estar leído.
+    const condicion = gestorFiltros.AND(
+        gestorFiltros.OR(esProyecto, esReunion),
+        gestorFiltros.NOT(estaLeido)
+    );
+
+    // Creamos un filtro llamado "Seguimiento"
+    // y le asignamos la condición compuesta.
+    gestorFiltros.agregarFiltro(
+        new FiltroCorreo('Seguimiento', condicion)
+    );
+
+    // Obtenemos los correos de la bandeja de entrada de Luis.
+    const entrada = gestor.getEntrada('luis@mail.com');
+
+    // aplicamos el filtro sobre esa colección.
+    const resultado = gestorFiltros.aplicarFiltro(
+        'Seguimiento',
+        entrada
+    );
+
+    // los tres correos cumplen inicialmente las condiciones.
+    expect(resultado).toEqual([correo1, correo2, correo3]);
+
+    // Marcamos el primer correo como leído para Luis.
+    correo1.marcarComoLeido('luis@mail.com');
+
+    // Volvemos a aplicar el mismo filtro.
+    const resultadoActualizado = gestorFiltros.aplicarFiltro(
+        'Seguimiento',
+        entrada
+    );
+
+    // El primer correo ya no cumple la condición de no leído.
+    // Por eso solamente deben quedar el segundo y el tercero.
+    expect(resultadoActualizado).toEqual([correo2, correo3]);
+});
+
 
 
 
