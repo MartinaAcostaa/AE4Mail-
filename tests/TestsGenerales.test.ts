@@ -122,13 +122,57 @@ it('RF 03: Permite administrar contactos sin perder las referencias históricas 
     expect(agenda.buscarContactoPorEmail('ana.gomez@mail.com'))
         .toBeUndefined();
 
-    // ASSERT: comprobamos que el correo conserve sus referencias.
+    // comprobamos que el correo conserve sus referencias.
     // Aunque Ana fue eliminada de la agenda, sigue siendo su remitente.
     expect(correo.getRemitente()).toBe(ana);
 
     // Luis continúa siendo el destinatario del correo.
     expect(correo.getDestinatarios()).toEqual([luis]);
 });
+
+    // RF 04: Búsqueda de correos electrónicos
+it('RF 04: Permite buscar correos recibidos por diferentes campos sin generar duplicados', () => {
+
+    //  creamos el gestor de correos.
+    const gestor = new GestorCorreos();
+
+    // Creamos los contactos.
+    const ana = new Contacto('Ana Lopez', 'ana@mail.com');
+    const luis = new Contacto('Luis Perez', 'luis@mail.com');
+
+    // Creamos un correo enviado por Ana a Luis.
+    const correo = new Correo(
+        'Reunión con Ana',
+        'Tenemos que revisar el proyecto',
+        ana,
+        [luis]
+    );
+
+    // enviamos el correo para que aparezca en la entrada de Luis.
+    gestor.enviarCorreo(correo);
+
+    // Buscamos en la entrada de Luis utilizando el texto "ana".
+    const resultado = gestor.buscarEnEntrada(
+        'luis@mail.com',
+        'ana'
+    );
+
+    //  comprobamos que el correo coincida con la búsqueda.
+    expect(resultado).toEqual([correo]);
+
+    // Verificamos que el resultado tenga un solo elemento.
+    // Esto permite comprobar que no se devuelvan duplicados.
+    expect(resultado).toHaveLength(1);
+
+    // Comprobamos que la búsqueda no haya eliminado ni modificado
+    // el correo de la bandeja de entrada original.
+    expect(gestor.getEntrada('luis@mail.com')).toEqual([correo]);
+});
+
+
+
+
+
 
 
 
