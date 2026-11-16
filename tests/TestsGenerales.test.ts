@@ -301,6 +301,57 @@ it('RF 06: Permite eliminar y restaurar un correo en su bandeja original', () =>
     expect(gestor.getEliminados('luis@mail.com')).toEqual([]);
 });
 
+// RF 07: Gestión de borradores
+it('RF 07: Permite guardar, editar y enviar un borrador', () => {
+
+    // creamos el gestor y los contactos.
+    const gestor = new GestorCorreos();
+
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    // Creamos un correo incompleto:
+    // no tiene asunto, contenido ni destinatarios.
+    const borrador = new Correo('', '', ana, []);
+
+    // guardamos el correo como borrador.
+    gestor.guardarBorrador(borrador);
+
+    // ASSERT: comprobamos que esté en los borradores de Ana.
+    expect(gestor.getBorradores('ana@mail.com')).toEqual([borrador]);
+
+    // completamos y editamos el borrador.
+    gestor.editarBorrador(
+        borrador,
+        'Entrega AE4',
+        'Adjunto el trabajo final',
+        [luis]
+    );
+
+    // verificamos que el asunto se haya actualizado.
+    expect(borrador.getAsunto()).toBe('Entrega AE4');
+
+    // Comprobamos que el contenido también se haya actualizado.
+    expect(borrador.getContenido()).toBe('Adjunto el trabajo final');
+
+    // Verificamos que Luis sea el destinatario.
+    expect(borrador.getDestinatarios()).toEqual([luis]);
+
+    // enviamos el borrador ya completado.
+    gestor.enviarCorreo(borrador);
+
+    // comprobamos que haya desaparecido de los borradores.
+    expect(gestor.getBorradores('ana@mail.com')).toEqual([]);
+
+    // Verificamos que ahora esté en los enviados de Ana.
+    expect(gestor.getEnviados('ana@mail.com')).toEqual([borrador]);
+
+    // Comprobamos que haya llegado a la entrada de Luis.
+    expect(gestor.getEntrada('luis@mail.com')).toEqual([borrador]);
+});
+
+
+
 
 
 
