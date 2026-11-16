@@ -350,7 +350,52 @@ it('RF 07: Permite guardar, editar y enviar un borrador', () => {
     expect(gestor.getEntrada('luis@mail.com')).toEqual([borrador]);
 });
 
+// RF 08: Estado de lectura
+it('RF 08: Permite modificar el estado de lectura y actualizar los resultados de los filtros', () => {
 
+    // creamos el gestor y los contactos.
+    const gestor = new GestorCorreos();
+
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    // Creamos dos correos dirigidos a Luis.
+    const correo1 = new Correo(
+        'Entrega 1',
+        'Primer trabajo',
+        ana,
+        [luis]
+    );
+
+    const correo2 = new Correo(
+        'Entrega 2',
+        'Segundo trabajo',
+        ana,
+        [luis]
+    );
+
+    // Enviamos ambos correos.
+    gestor.enviarCorreo(correo1);
+    gestor.enviarCorreo(correo2);
+
+    // verificamos que inicialmente los dos estén sin leer.
+    expect(gestor.getNoLeidosEntrada('luis@mail.com'))
+        .toEqual([correo1, correo2]);
+
+    // marcamos el primer correo como leído para Luis.
+    correo1.marcarComoLeido('luis@mail.com');
+
+    // ahora solamente el segundo debe estar sin leer.
+    expect(gestor.getNoLeidosEntrada('luis@mail.com'))
+        .toEqual([correo2]);
+
+    // volvemos a marcar el primer correo como no leído.
+    correo1.marcarComoNoLeido('luis@mail.com');
+
+    // ahora ambos deben aparecer nuevamente como no leídos.
+    expect(gestor.getNoLeidosEntrada('luis@mail.com'))
+        .toEqual([correo1, correo2]);
+});
 
 
 
