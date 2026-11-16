@@ -397,7 +397,87 @@ it('RF 08: Permite modificar el estado de lectura y actualizar los resultados de
         .toEqual([correo1, correo2]);
 });
 
+// RF 09: Gestión de favoritos
+it('RF 09: Permite consultar, filtrar y restaurar correos favoritos', () => {
 
+    // creamos los gestores.
+    const gestor = new GestorCorreos();
+    const gestorFiltros = new GestorFiltros();
+
+    // Creamos los contactos.
+    const ana = new Contacto('Ana', 'ana@ucp.edu.ar');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    // Creamos dos correos enviados por Ana a Luis.
+    const correo1 = new Correo(
+        'Proyecto AE4',
+        'Entrega del trabajo',
+        ana,
+        [luis]
+    );
+
+    const correo2 = new Correo(
+        'Reunión',
+        'Revisar el proyecto',
+        ana,
+        [luis]
+    );
+
+    // Enviamos ambos correos.
+    gestor.enviarCorreo(correo1);
+    gestor.enviarCorreo(correo2);
+
+    // marcamos los dos correos como favoritos para Luis.
+    gestor.marcarComoFavorito(correo1, 'luis@mail.com');
+    gestor.marcarComoFavorito(correo2, 'luis@mail.com');
+
+    // comprobamos que ambos aparezcan en favoritos.
+    expect(gestor.getFavoritos('luis@mail.com'))
+        .toEqual([correo1, correo2]);
+
+    // Creamos un filtro que identifica correos cuyo remitente
+    // tiene una dirección que termina en "@ucp.edu.ar".
+    gestorFiltros.agregarFiltro(
+        new FiltroCorreo(
+            'Correos UCP',
+            correo => correo.getRemitente().getEmail().endsWith('@ucp.edu.ar')
+        )
+    );
+
+    // aplicamos el filtro sobre la colección de favoritos.
+    const resultado = gestorFiltros.aplicarFiltro(
+        'Correos UCP',
+        gestor.getFavoritos('luis@mail.com')
+    );
+
+    // ambos correos cumplen la condición porque
+    // fueron enviados por Ana, cuya dirección pertenece a UCP.
+    expect(resultado).toEqual([correo1, correo2]);
+
+    // eliminamos el primer correo de la bandeja de Luis.
+    gestor.eliminarCorreo(correo1, 'luis@mail.com');
+
+    // el correo eliminado ya no debe aparecer
+    // en la consulta habitual de favoritos.
+    expect(gestor.getFavoritos('luis@mail.com')).toEqual([correo2]);
+
+    // restauramos el primer correo.
+    gestor.restaurarCorreo(correo1, 'luis@mail.com');
+
+    // comprobamos que conserve su condición de favorito.
+    expect(correo1.getFavorito('luis@mail.com')).toBe(true);
+
+    // Verificamos que ambos correos vuelvan a aparecer en favoritos,
+    // independientemente del orden en el que se devuelvan.
+    expect(gestor.getFavoritos('luis@mail.com'))
+    .toHaveLength(2);
+
+    expect(gestor.getFavoritos('luis@mail.com'))
+    .toContain(correo1);
+
+    expect(gestor.getFavoritos('luis@mail.com'))
+    .toContain(correo2);
+});
 
 
 
