@@ -479,6 +479,59 @@ it('RF 09: Permite consultar, filtrar y restaurar correos favoritos', () => {
     .toContain(correo2);
 });
 
+// RF 10: Procesamiento funcional y estadísticas
+it('RF 10: Permite obtener asuntos, filtrar correos y calcular estadísticas', () => {
+
+    // creamos el gestor de correos y el de estadísticas.
+    const gestor = new GestorCorreos();
+    const estadisticas = new Estadisticas();
+
+    // Creamos los contactos.
+    const ana = new Contacto('Ana', 'ana@mail.com');
+    const luis = new Contacto('Luis', 'luis@mail.com');
+
+    // Creamos dos correos.
+    const correo1 = new Correo(
+        'Proyecto',
+        'Entrega del trabajo',
+        ana,
+        [luis]
+    );
+
+    const correo2 = new Correo(
+        'Examen',
+        'Estudiar para el parcial',
+        ana,
+        [luis]
+    );
+
+    // Enviamos ambos correos.
+    gestor.enviarCorreo(correo1);
+    gestor.enviarCorreo(correo2);
+
+    // Obtenemos la colección de correos recibidos por Luis.
+    const entrada = gestor.getEntrada('luis@mail.com');
+
+    // utilizamos map para obtener solamente los asuntos.
+    expect(estadisticas.obtenerAsuntos(entrada))
+        .toEqual(['Proyecto', 'Examen']);
+
+    // Utilizamos filter para obtener los correos
+    // cuyo asunto contiene la palabra "Proyecto".
+    const proyectos = estadisticas.filtrarCorreos(
+        entrada,
+        correo => correo.getAsunto().includes('Proyecto')
+    );
+
+    // Comprobamos que solamente se haya seleccionado el primer correo.
+    expect(proyectos).toEqual([correo1]);
+
+    // Utilizamos reduce para contar los correos no leídos por Luis.
+    expect(
+        estadisticas.contarNoLeidos(entrada, 'luis@mail.com')
+        ).toBe(2);
+});
+
 
 
 
